@@ -1,0 +1,58 @@
+{
+  "summary": "Iteration 5 regression pass (GRC platform). Backend pytest: 31/32 passed (1 failure is an edge/ingress read-timeout on POST /api/assessments — the endpoint runs a full Claude Sonnet 4.5 orchestration that frequently exceeds the 240s client/ingress window, not a functional defect). Frontend smoke: login + nav to Controls Library / Control Analysis / Regulatory Analysis all succeed with ZERO console errors; Controls Library renders mirrored regulatory-gap controls with framework badges, § regulatory reference tags and 'From regulatory gap' source indicator. The NEW feature under review (Regulatory Analysis -> Controls Library MIRROR) works end-to-end: POST /api/control-analysis/controls with source=REGULATORY_GAP returns library_mirror.id, GET /api/controls/library returns 200 (regression on category->enum mapping no longer occurs), and the mirrored record has the expected frameworks/regulatory_references/source/category.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "POST /api/assessments",
+        "issue": "Synchronous multi-agent orchestration runs inline during the POST — request frequently exceeds ingress/gateway timeout (>240s) and returns 'The preview environment is not responding.'. No data loss (initial doc is persisted first), but client sees a failure. Recommend turning this into an async job (return 202 with assessment.id; run orchestrator in BackgroundTasks; update status via polling or webhook)."
+      },
+      {
+        "endpoint": "POST /api/rag/documents/upload",
+        "issue": "Hard-gates on `.pdf` extension (`Only PDF files are supported`). The review brief expected a simple .txt upload to also work. If .txt ingest is desired, add a text-parser branch; otherwise tighten the Swagger docstring to say PDF-only."
+      },
+      {
+        "endpoint": "POST /api/issue-management/",
+        "issue": "Body schema requires `issue_type` and `severity` (not `type`/`priority` alone). Contract is fine but the earlier review brief sample payload was out of date — consider aligning docs/examples."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_regression_iteration_5.py",
+    "/app/test_reports/pytest/iteration_5.xml"
+  ],
+  "action_items": [
+    "Move POST /api/assessments AI orchestration to a BackgroundTasks/worker pattern so the HTTP call returns quickly and does not hit the 240s+ ingress timeout.",
+    "(Optional) Support .txt uploads in /api/rag/documents/upload, or update OpenAPI description to state PDF-only.",
+    "(Optional) Align public API examples/docstrings for /api/issue-management/ to reflect the real body fields (issue_type, severity)."
+  ],
+  "critical_code_review_comments": [
+    "server.py is ~2565 lines and continues to grow — assessments, regulations, workflows, custom controls, AI compliance, gap remediation, automated testing, admin, trends-shims all live here. Should be split into routers like the newer routes/ modules (control_analysis, tech_risk, issue_management already done).",
+    "routes/control_analysis.py create_control() hand-rolls mirror logic that builds a dict conforming to CustomControl. It does NOT validate via the CustomControl Pydantic model before inserting, so a future schema change could silently drift. Consider constructing CustomControl(...).model_dump().",
+    "routes/documents.py upload_document rejects non-PDF at the filename check, so anything else 400s. If you want to also index plain text, branch before get_pdf_parser().",
+    "All endpoints exclude Mongo `_id` (projections use `{\"_id\": 0}`) — good.",
+    "LLM-heavy flows (assessments, regulation map, evaluate_evidence) all run inline in the request handler. Latency is already 30-120s for some; consider background execution uniformly.",
+    "services/auth.py demo-user seeding is idempotent (checked via previous iteration); credentials file in /app/memory/test_credentials.md matches."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_regression_iteration_5.py"
+  ],
+  "success_rate": {
+    "backend": "97% (31/32 pytest)",
+    "frontend": "100% of smoke flows (login, nav, Controls Library renders mirrored gap control with framework + § reg ref + 'From regulatory gap' tags, 0 console errors)"
+  },
+  "test_credentials": "admin@bank.com/admin123, lod1@bank.com/password123, lod2@bank.com/password123 — loaded from /app/memory/test_credentials.md, all three login successfully and /api/auth/me returns the correct role.",
+  "seed_data_creation": "Tests insert TEST_-prefixed controls into the default tenant (control_register and custom_controls) and TEST_-prefixed regulations, issues and tech-risk assessments. They are NOT cleaned up (best-effort, to keep the UI screenshots meaningful). If a cleanup cycle is desired, E1 can add a teardown that deletes by the TEST_ prefix.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Reuse /app/backend/tests/test_regression_iteration_5.py for the next regression pass. The one failure (TestAssessments::test_create_list_get) is an infra timeout on LLM orchestration, not a defect. The REGULATORY_GAP -> Controls Library mirror is the feature E1 landed this turn; TestRegulatoryGapMirror covers the full chain (create via /api/control-analysis/controls, list returns 200, mirrored doc has correct category/frameworks/regulatory_references/source). /api/v1/* prefixes mentioned in the original review request are NOT used in the current codebase — the server mounts tech_risk/trends/tenants/servicenow/issue-management/system/control-analysis under /api/ directly. Frontend Controls Library page at /controls-library renders correctly (verified screenshot shows framework badges, § reg refs, APPROVED/DRAFT status). ServiceNow is intentionally MOCKED until Admin configures live creds.",
+  "mocked_apis_verified": {
+    "ServiceNow connector": "MOCKED (default) — confirmed via system health pill showing ServiceNow · Mock"
+  },
+  "rca_of_the_issue": "The prior bug — /api/controls/library returning 500 due to a library_mirror row inserted with category='PREVENTIVE' (not a valid ControlCategory enum value) — is FIXED. The fix in routes/control_analysis.py (lines ~214-219) maps the incoming register `type` (TECHNICAL/ADMINISTRATIVE/PHYSICAL/OPERATIONAL/AI_*) into the library's ControlCategory enum and falls back to ADMINISTRATIVE for anything invalid, so register-side PREVENTIVE/DETECTIVE/CORRECTIVE never leaks into the library. Regression coverage is now explicit in TestRegulatoryGapMirror::test_library_returns_200_after_mirror + test_library_contains_mirrored_control."
+}

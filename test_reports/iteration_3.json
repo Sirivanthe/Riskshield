@@ -1,0 +1,70 @@
+{
+  "summary": "Comprehensive testing of new Tech Risk Assessment and Issue Management modules. All backend API tests pass (39/39). All frontend E2E tests pass (22/22). ServiceNow integration is in MOCK mode. CMDB context returns mock data.",
+  "mode": "generate",
+  "baseline_commit": "779906d4db9e00ea3b805b23c81437b2f2e7c898",
+  "head_commit": "711026a7d195cad63ed8558a93a10724d3bb1b26",
+  "specs_created": [
+    "/app/tests/e2e/tech-risk-assessment.spec.ts",
+    "/app/tests/e2e/issue-management.spec.ts",
+    "/app/backend/tests/test_tech_risk_assessment.py",
+    "/app/backend/tests/test_issue_management.py"
+  ],
+  "specs_updated": [],
+  "quarantined_tests": [],
+  "test_report_links": [
+    "/app/backend/tests/test_tech_risk_assessment.py",
+    "/app/backend/tests/test_issue_management.py",
+    "/app/test_reports/pytest/pytest_results_new_features.xml"
+  ],
+  "regression_results": {
+    "total_specs": 61,
+    "passed": 61,
+    "failed": 0,
+    "skipped": 0
+  },
+  "issues": [],
+  "action_items": [],
+  "updated_files": [
+    "/app/tests/playwright.config.ts",
+    "/app/tests/e2e/tech-risk-assessment.spec.ts",
+    "/app/tests/e2e/issue-management.spec.ts",
+    "/app/backend/tests/test_tech_risk_assessment.py",
+    "/app/backend/tests/test_issue_management.py"
+  ],
+  "test_results": {
+    "backend": "100% (39/39 passed)",
+    "frontend": "100% (22/22 passed)"
+  },
+  "seed_data_creation": "Test data created with TEST_ prefix for assessments and issues during test runs",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All new features tested and working. Tech Risk Assessment supports intelligent questionnaire, risk identification, PDF report generation, and issue creation from risks. Issue Management supports full lifecycle (create, update, resolve, close), comments, history tracking, and ServiceNow sync (MOCKED). Backend tests in test_tech_risk_assessment.py and test_issue_management.py. Frontend tests in tech-risk-assessment.spec.ts and issue-management.spec.ts.",
+  "features_tested": {
+    "tech_risk_assessment": {
+      "create_assessment": "PASS - Create with context, CMDB integration (mock)",
+      "intelligent_questionnaire": "PASS - Questions tailored to context",
+      "submit_questionnaire": "PASS - Risk identification and control recommendations",
+      "pdf_report": "PASS - Download PDF report",
+      "create_issues": "PASS - Create issues from identified risks",
+      "complete_assessment": "PASS - Review and complete workflow",
+      "filter_assessments": "PASS - Filter by status and app name",
+      "risk_categories": "PASS - Get risk categories and ratings"
+    },
+    "issue_management": {
+      "create_issue": "PASS - Manual issue creation",
+      "list_issues": "PASS - List with filters (status, priority, type)",
+      "get_statistics": "PASS - Dashboard statistics",
+      "update_status": "PASS - Status transitions with history",
+      "add_comments": "PASS - Comments with internal flag",
+      "resolve_issue": "PASS - Resolution with root cause and lessons learned",
+      "close_issue": "PASS - Close resolved issues",
+      "servicenow_sync": "PASS - Sync to ServiceNow (MOCKED)",
+      "link_to_assessment": "PASS - Link issues to assessments",
+      "sla_tracking": "PASS - SLA deadlines set correctly"
+    }
+  },
+  "mocked_apis_verified": {
+    "servicenow_connector": "MOCKED - Returns simulated ticket numbers",
+    "cmdb_context": "MOCKED - Returns predefined application data"
+  }
+}

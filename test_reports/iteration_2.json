@@ -1,0 +1,85 @@
+{
+  "summary": "Comprehensive testing of new Controls Library and AI Compliance features. Fixed critical bug in Controls Library form submission (regulatory_references and evidence_requirements were initialized as arrays instead of strings, causing .split() to fail). All backend API tests pass (73 tests). All frontend E2E tests pass (54 tests total).",
+  "mode": "generate",
+  "baseline_commit": "04ef808ab6be7017951d7701ea1b743e10331059",
+  "head_commit": "6652388c2ccdad2e877caddd7d764f6cfd633e7b",
+  "specs_created": [
+    "/app/tests/e2e/controls-library.spec.ts",
+    "/app/tests/e2e/ai-compliance.spec.ts",
+    "/app/backend/tests/test_controls_library.py",
+    "/app/backend/tests/test_ai_compliance.py"
+  ],
+  "specs_updated": [],
+  "quarantined_tests": [],
+  "test_report_links": [
+    "/app/backend/tests/test_controls_library.py",
+    "/app/backend/tests/test_ai_compliance.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "regression_results": {
+    "total_specs": 54,
+    "passed": 54,
+    "failed": 0,
+    "skipped": 0
+  },
+  "issues": [
+    {
+      "id": "BUG-001",
+      "issue_type": "bug",
+      "severity": "CRITICAL",
+      "description": "Controls Library form submission was broken - regulatory_references and evidence_requirements were initialized as arrays [] instead of strings '', causing .split() to fail silently when creating controls",
+      "endpoint_or_component": "/app/frontend/src/pages/ControlsLibrary.js",
+      "surfaces": ["frontend"],
+      "reproduction": "1. Navigate to Controls Library, 2. Click '+ New Control', 3. Fill form and click 'Create Control', 4. Modal would not close due to JavaScript error",
+      "affected_test": "Fixed during testing - controls-library.spec.ts:29 now passes"
+    },
+    {
+      "id": "BUG-002",
+      "issue_type": "bug",
+      "severity": "MEDIUM",
+      "description": "Modal CSS styles were missing from App.css - modals were rendering at bottom of page instead of as centered overlays",
+      "endpoint_or_component": "/app/frontend/src/App.css",
+      "surfaces": ["frontend"],
+      "reproduction": "Open any modal (Create Control, Register AI System) - modal would appear at bottom of page content",
+      "affected_test": "Fixed during testing - added modal-overlay and modal CSS classes"
+    }
+  ],
+  "action_items": [],
+  "updated_files": [
+    "/app/frontend/src/pages/ControlsLibrary.js",
+    "/app/frontend/src/App.css",
+    "/app/backend/tests/conftest.py",
+    "/app/backend/tests/test_controls_library.py",
+    "/app/backend/tests/test_ai_compliance.py",
+    "/app/tests/e2e/controls-library.spec.ts",
+    "/app/tests/e2e/ai-compliance.spec.ts"
+  ],
+  "test_results": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+  "seed_data_creation": "Test data created with TEST_ prefix for controls, AI systems, and assessments",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All new features tested and working. Controls Library supports LOD1/LOD2 approval workflow. AI Compliance supports EU AI Act and NIST AI RMF assessments. Backend tests in test_controls_library.py and test_ai_compliance.py. Frontend tests in controls-library.spec.ts and ai-compliance.spec.ts.",
+  "features_tested": {
+    "controls_library": {
+      "custom_control_creation": "PASS - LOD1 creates DRAFT, LOD2/Admin creates APPROVED",
+      "approval_workflow": "PASS - LOD2 can approve/reject LOD1 controls",
+      "control_filtering": "PASS - Filter by framework, AI controls, pending review",
+      "control_testing_lifecycle": "PASS - Create, update, submit, review tests"
+    },
+    "ai_compliance": {
+      "ai_system_registration": "PASS - Register with risk category, deployment status",
+      "ai_frameworks_endpoint": "PASS - Returns EU AI Act and NIST AI RMF",
+      "eu_ai_act_assessment": "PASS - Creates assessment with 10+ mandatory controls",
+      "nist_ai_rmf_assessment": "PASS - Creates assessment with GOVERN/MAP/MEASURE/MANAGE functions",
+      "gap_analysis": "PASS - Run against frameworks"
+    }
+  },
+  "mocked_apis_verified": {
+    "llm_responses": "Uses Mock provider - verified working",
+    "grc_ticket_creation": "Simulated - verified working",
+    "gap_analysis": "Uses predefined framework requirements - verified working"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "summary": "End-to-end testing of the new Control Analysis module. Backend: 21/21 pytest cases pass against the deployed preview URL including real LLM evidence evaluation, 5W1H narrative, language uplift, regulation mapping, quality/coverage/duplicates and PDF/Excel workpaper generation. Frontend: all data-testid driven flows on /control-analysis pass – login -> nav -> ServiceNow import -> register/quality/coverage/duplicates/regulation tabs -> regulation mapping -> detail drawer -> uplift + apply -> evidence upload with PASS/confidence + 5W1H narrative -> PDF + Excel workpaper downloads. Regression: /api/auth/login, /api/tech-risk/assessments, /api/issue-management still reachable.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/control-analysis/quality",
+        "issue": "Quality score formula uses average of completeness/uniqueness/strength weighted 40/30/30 – strong_controls count can be 0 for imports without strong keywords, dragging score even when completeness is 100%. Consider surfacing the raw sub-scores in the response for UI transparency."
+      },
+      {
+        "endpoint": "POST /api/control-analysis/workpaper/pdf & /excel",
+        "issue": "Requests without a JSON body (e.g. empty GET-as-POST) work because WorkpaperRequest has all-optional fields, but the POST route still requires Content-Type=application/json; a plain POST with no body returns 422. Not blocking since the UI always sends JSON."
+      },
+      {
+        "endpoint": "POST /api/control-analysis/regulation/map",
+        "issue": "Requirement parser is purely regex-based (`must|shall|should`). Works for demo inputs but can mis-classify edge sentences; acceptable for MVP but flag for future NLP upgrade."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Control Analysis header",
+        "issues": ["Export PDF button label is rendered with near-invisible text at 1920x1080 (outline variant on slate-900 background). Export Excel is fine. Consider increasing text contrast or using solid button variant for both download buttons."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_control_analysis.py",
+    "/app/test_reports/pytest/control_analysis.xml"
+  ],
+  "action_items": [
+    "Improve contrast of 'Export PDF' button in ControlAnalysis header (outline variant is barely visible on slate-900).",
+    "(Optional) Surface completeness / uniqueness / strength sub-scores in /quality response for richer UI display.",
+    "(Optional) Upgrade regulation requirement parser from regex to LLM/NLP for better MANDATORY/RECOMMENDED classification."
+  ],
+  "critical_code_review_comments": [
+    "control_analysis_service.py is ~820 lines – borderline but readable; consider splitting ingestion, analysis, LLM and workpaper data-prep into separate modules before it grows further.",
+    "evaluate_evidence updates control.effectiveness from every evaluation – if multiple evaluators upload conflicting evidence the latest one silently overrides; consider keeping an evaluation history pointer and requiring explicit promotion.",
+    "All endpoints properly exclude MongoDB `_id` (verified via test_list_controls_no_object_id_leak).",
+    "Routes use HTTP 400 for parse errors, 404 for missing resources, 500 for unexpected – good.",
+    "LLM calls (uplift + evaluate + 5w1h) run sequentially inside evaluate_evidence; latency is ~20-40s per call. Acceptable for now, but consider firing evaluate + 5w1h with asyncio.gather for parallelism.",
+    "No pagination on /controls beyond `limit` query param – fine for demo but will need cursor/offset once dataset grows."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_control_analysis.py"
+  ],
+  "success_rate": {
+    "backend": "100% (21/21 pytest)",
+    "frontend": "100% of targeted flows (login, nav, ServiceNow import, 5 tabs, regulation mapping, detail drawer, uplift+apply, evidence upload w/ 5W1H, PDF download, Excel download)"
+  },
+  "test_credentials": "admin@bank.com / admin123 from /app/memory/test_credentials.md",
+  "seed_data_creation": "Each pytest run creates an isolated tenant (test_tenant_<uuid6>) containing 3 CSV + 1 Excel + 3 ServiceNow controls, and best-effort deletes them on teardown. No pollution of the default tenant.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend public URL is https://audit-control-hub-4.preview.emergentagent.com (from /app/frontend/.env). Control Analysis routes are mounted at /api/control-analysis/*. Real LLM calls (Emergent key + Claude Sonnet 4.5) take 15-40s per endpoint; pytest timeouts are set to 90-120s for those. ServiceNow import is the intended MOCK (3 hardcoded controls). Use tenant_id query param to isolate data. Frontend page uses data-testids documented in review_request; all worked as-is. Downloads are triggered via page.expect_download; both PDF (%PDF header verified) and Excel (4 sheets: Control Register, Quality Summary, Domain Coverage, Evidence Evaluations) validated.",
+  "mocked_apis_verified": {
+    "/api/control-analysis/controls/import/servicenow": "MOCKED – returns 3 hardcoded controls as designed"
+  },
+  "rca_of_the_issue": "No blocking issues. Only a minor design nit (Export PDF button contrast) and optional enhancement suggestions."
+}

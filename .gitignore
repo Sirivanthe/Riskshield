@@ -1,0 +1,30 @@
+# Environment files
+backend/.env
+frontend/.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Mac
+.DS_Store
+
+# Logs
+*.log
+
+# MongoDB data
+data/
+
+# Virtual environments
+venv/
+.venv/

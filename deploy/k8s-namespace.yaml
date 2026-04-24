@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: riskshield
+  labels:
+    name: riskshield
+    environment: production
