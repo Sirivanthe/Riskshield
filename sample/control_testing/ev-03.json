@@ -1,0 +1,27 @@
+{
+  "backup_storage": {
+    "provider": "AWS S3",
+    "bucket_name": "prod-db-backups-secure",
+    "encryption": {
+      "type": "AES-256",
+      "enabled": true
+    },
+    "versioning": true,
+    "public_access": false
+  },
+  "access_control": {
+    "roles_allowed": [
+      "BackupServiceRole",
+      "DisasterRecoveryAdmin"
+    ],
+    "roles_denied": [
+      "AllUsers",
+      "Anonymous"
+    ],
+    "mfa_required": true
+  },
+  "audit_logging": {
+    "enabled": true,
+    "log_destination": "CloudTrail"
+  }
+}

@@ -1,0 +1,33 @@
+Document Title: Backup Restoration Test Report
+System: Enterprise Data Platform
+Test Frequency: Quarterly
+Test Period: Q1 & Q2 2026
+
+--------------------------------------------------
+Test 1:
+Date: 15-Jan-2026
+Database: core_banking_db
+Recovery Time Objective (RTO): 2 hours
+Actual Recovery Time: 1 hour 32 minutes
+Status: SUCCESS
+
+Test 2:
+Date: 15-Apr-2026
+Database: customer_master_db
+Recovery Time Objective (RTO): 2 hours
+Actual Recovery Time: 1 hour 48 minutes
+Status: SUCCESS
+
+--------------------------------------------------
+Validation Checks:
+- Data integrity verified using checksum comparison
+- Application connectivity restored successfully
+- No data loss observed
+
+--------------------------------------------------
+Conclusion:
+Backup restoration procedures are effective and meet defined RTO requirements.
+
+Approved by:
+Disaster Recovery Lead
+Date: 16-Apr-2026

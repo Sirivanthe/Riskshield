@@ -471,6 +471,93 @@ async def evaluate_upload(
         logger.error(f"Evidence upload failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.get("/evidence/checklist/{control_id}")
+async def get_evidence_checklist(
+    control_id: str,
+    tenant_id: str = Query("default"),
+):
+    """Parse the control's test procedure and return required evidence items."""
+    service = ControlAnalysisService(tenant_id=tenant_id)
+    control = await service.get_control(control_id)
+    if not control:
+        raise HTTPException(status_code=404, detail="Control not found")
+    
+    from services.llm_evaluator import analyze_test_procedure
+    result = await analyze_test_procedure(control if isinstance(control, dict) else control.dict())
+    
+    items = []
+    for i, req in enumerate(result.get("evidence_requirements", []), start=1):
+        items.append({
+            "id": f"EV-{i:03d}",
+            "item": req.get("item", ""),
+            "why": req.get("why", ""),
+            "type": req.get("type", "other"),
+            "status": "pending",
+            "evaluation": None,
+        })
+    
+    return {
+        "control_id": control_id,
+        "control_name": control.get("name", "") if isinstance(control, dict) else control.name,
+        "adequacy_score": result.get("adequacy_score", 0),
+        "adequate": result.get("adequate", False),
+        "gaps": result.get("gaps", []),
+        "evidence_items": items,
+        "suggested_improvement": result.get("suggested_improvement", ""),
+    }
+
+
+@api_router.post("/evidence/upload-item")
+async def evaluate_evidence_item(
+    control_id: str = Form(...),
+    item_id: str = Form(...),
+    item_description: str = Form(...),
+    uploaded_by: Optional[str] = Form(None),
+    file: UploadFile = File(...),
+    tenant_id: str = Query("default"),
+):
+    """Evaluate a single evidence item against its specific requirement."""
+    try:
+        raw = await file.read()
+        filename = file.filename or "evidence"
+        lower = filename.lower()
+        if lower.endswith(".pdf"):
+            try:
+                import fitz
+                text_parts = []
+                with fitz.open(stream=raw, filetype="pdf") as doc:
+                    for page in doc:
+                        text_parts.append(page.get_text())
+                evidence_text = "\n".join(text_parts)
+            except Exception:
+                evidence_text = raw.decode("utf-8", errors="ignore")
+        else:
+            evidence_text = raw.decode("utf-8", errors="ignore")
+
+        if not evidence_text.strip():
+            raise HTTPException(status_code=400, detail="Evidence file appears to be empty")
+
+        service = ControlAnalysisService(tenant_id=tenant_id)
+        control = await service.get_control(control_id)
+        if not control:
+            raise HTTPException(status_code=404, detail="Control not found")
+
+        # Evaluate just this item against its specific requirement
+        from services.llm_evaluator import evaluate_evidence
+        control_dict = control if isinstance(control, dict) else control.dict()
+        control_dict["test_procedure"] = f"Evaluate ONLY this evidence requirement: {item_description}"
+        
+        result = await evaluate_evidence(control_dict, evidence_text, filename)
+        result["item_id"] = item_id
+        result["item_description"] = item_description
+        result["filename"] = filename
+        
+        return result
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/evaluations")
 async def list_evaluations(

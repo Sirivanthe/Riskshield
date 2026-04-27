@@ -1,0 +1,25 @@
+Document Title: Critical Database Inventory
+System: Enterprise Data Platform
+Owner: IT Infrastructure
+Last Updated: 31-Mar-2026
+
+--------------------------------------------------
+Database Name        Environment   Criticality   Backup Required   Owner
+--------------------------------------------------
+core_banking_db      Production    HIGH          YES               Banking Ops
+customer_master_db   Production    HIGH          YES               CRM Team
+payments_db          Production    HIGH          YES               Payments Team
+fraud_detection_db   Production    MEDIUM        YES               Risk Team
+analytics_warehouse  Production    MEDIUM        YES               Data Team
+
+--------------------------------------------------
+Summary:
+- Total Databases: 5
+- Critical Databases: 3 (High)
+- All listed databases are included in backup policy "DAILY_FULL_BACKUP_POLICY"
+- Backup frequency: Daily (02:00 AM IST)
+--------------------------------------------------
+
+Approval:
+Reviewed by: Head of IT Infrastructure
+Date: 31-Mar-2026

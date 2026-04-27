@@ -280,7 +280,11 @@ class ControlAnalysisService:
         uniqueness = (total - duplicates) / total if total > 0 else 0
         strength = strong / total if total > 0 else 0
         
-        quality_score = (completeness * 40 + uniqueness * 30 + strength * 30)
+        # Effectiveness component
+        effective_count = len([c for c in controls if c.get('effectiveness') in ('EFFECTIVE', 'PARTIALLY_EFFECTIVE')])
+        effectiveness = effective_count / total if total > 0 else 0
+        
+        quality_score = (completeness * 30 + uniqueness * 25 + strength * 20 + effectiveness * 25)
         
         return ControlQualityMetrics(
             total_controls=total,
@@ -541,7 +545,10 @@ class ControlAnalysisService:
         
         domain_stats = {}
         
-        for domain in self.CONTROL_DOMAINS:
+        # Include both predefined domains and any custom domains from actual controls
+        actual_domains = list(set(c.get('domain', 'Unknown') for c in controls))
+        all_domains = list(set(self.CONTROL_DOMAINS + actual_domains))
+        for domain in all_domains:
             domain_controls = [c for c in controls if c.get('domain') == domain]
             
             if domain_controls:
@@ -571,7 +578,7 @@ class ControlAnalysisService:
             "domains": domain_stats,
             "total_controls": len(controls),
             "covered_domains": len([d for d, s in domain_stats.items() if s['total_controls'] > 0]),
-            "total_domains": len(self.CONTROL_DOMAINS)
+            "total_domains": len(all_domains)
         }
     
     async def uplift_control_language(self, control_id: str) -> Dict[str, Any]:
