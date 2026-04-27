@@ -143,9 +143,7 @@ const ControlAnalysis = () => {
   const [checklistCache, setChecklistCache] = useState({});
 
   // Regulation mapping
-  const [regulation, setRegulation] = useState({ framework_name: '', regulation_content: '' });
-  const [regulationResult, setRegulationResult] = useState(null);
-  const [mapping, setMapping] = useState(false);
+
 
   const [toast, setToast] = useState(null);
   const csvInputRef = useRef(null);
@@ -392,25 +390,7 @@ const ControlAnalysis = () => {
     }
   };
 
-  const mapRegulation = async () => {
-    if (!regulation.framework_name || !regulation.regulation_content) {
-      showToast('Framework name and content required', 'error'); return;
-    }
-    setMapping(true); setRegulationResult(null);
-    try {
-      const res = await fetch(`${API_URL}/api/control-analysis/regulation/map?tenant_id=${TENANT_ID}`, {
-        method: 'POST',
-        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify(regulation),
-      });
-      if (!res.ok) throw new Error('Mapping failed');
-      setRegulationResult(await res.json());
-    } catch (e) {
-      showToast(e.message, 'error');
-    } finally {
-      setMapping(false);
-    }
-  };
+
 
   const downloadWorkpaper = async (format) => {
     try {
@@ -518,7 +498,7 @@ const ControlAnalysis = () => {
             { id: 'quality', label: 'Quality' },
             { id: 'coverage', label: 'Coverage' },
             { id: 'duplicates', label: `Duplicates${duplicates.length ? ` (${duplicates.length})` : ''}` },
-            { id: 'regulation', label: 'Regulation Mapping' },
+
           ].map((t) => (
             <button key={t.id} onClick={() => setTab(t.id)}
               className={`px-4 py-2 text-sm ${tab === t.id ? 'text-blue-400 border-b-2 border-blue-400' : 'text-slate-400'}`}>
@@ -740,131 +720,22 @@ const ControlAnalysis = () => {
           </Card>
         )}
 
-        {/* Regulation mapping tab */}
+        {/* Regulation mapping — moved to Regulatory Analysis page */}
         {tab === 'regulation' && (
           <Card className="bg-slate-800/50 border-slate-700">
-            <CardHeader><CardTitle className="text-white text-base">Regulatory Mapping & Compliance Score</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
-              <Input placeholder="Framework name (e.g., RBI Cyber Security)" value={regulation.framework_name}
-                onChange={(e) => setRegulation({ ...regulation, framework_name: e.target.value })}
-                className="bg-slate-700 border-slate-600 text-white" />
-              <textarea rows={8} placeholder="Paste regulation text. Each line is treated as a requirement."
-                value={regulation.regulation_content}
-                onChange={(e) => setRegulation({ ...regulation, regulation_content: e.target.value })}
-                className="w-full bg-slate-700 border border-slate-600 text-white p-2 rounded text-sm" />
-              <Button onClick={mapRegulation} disabled={mapping}>{mapping ? 'Mapping...' : 'Map Controls to Regulation'}</Button>
-              {regulationResult && (
-                <div className="space-y-4 pt-4 border-t border-slate-700">
-                  
-                  {/* Score Banner */}
-                  <div className={`p-4 rounded-xl border ${
-                    regulationResult.compliance_score >= 80 ? 'bg-green-900/20 border-green-600' :
-                    regulationResult.compliance_score >= 50 ? 'bg-yellow-900/20 border-yellow-600' :
-                    'bg-red-900/20 border-red-600'
-                  }`}>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-xs text-slate-400 uppercase mb-1">Compliance Score</div>
-                        <div className="text-4xl font-bold text-white">{(regulationResult.compliance_score ?? 0).toFixed(1)}<span className="text-xl text-slate-400">%</span></div>
-                        <div className="text-sm text-slate-400 mt-1">
-                          {regulationResult.compliance_score >= 80 ? '✅ Good compliance coverage' :
-                           regulationResult.compliance_score >= 50 ? '⚠️ Partial coverage — gaps need attention' :
-                           '❌ Significant gaps — controls needed'}
-                        </div>
-                      </div>
-                      <div className="text-xs text-slate-400 text-right">
-                        <div>Score = (Covered + 0.5 × Partial) / Total requirements</div>
-                        <div className="mt-1">COVERED = 2+ controls match · PARTIAL = 1 control matches</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Summary Cards */}
-                  <div className="grid grid-cols-4 gap-3">
-                    <div className="bg-green-900/30 border border-green-700 p-3 rounded">
-                      <div className="text-xs text-green-300">✅ Covered</div>
-                      <div className="text-2xl font-bold text-white">{regulationResult.coverage_summary?.covered ?? 0}</div>
-                      <div className="text-xs text-green-400">2+ controls mapped</div>
-                    </div>
-                    <div className="bg-yellow-900/30 border border-yellow-700 p-3 rounded">
-                      <div className="text-xs text-yellow-300">⚠️ Partial</div>
-                      <div className="text-2xl font-bold text-white">{regulationResult.coverage_summary?.partially_covered ?? 0}</div>
-                      <div className="text-xs text-yellow-400">1 control mapped</div>
-                    </div>
-                    <div className="bg-red-900/30 border border-red-700 p-3 rounded">
-                      <div className="text-xs text-red-300">❌ Not Covered</div>
-                      <div className="text-2xl font-bold text-white">{regulationResult.coverage_summary?.not_covered ?? 0}</div>
-                      <div className="text-xs text-red-400">No controls mapped</div>
-                    </div>
-                    <div className="bg-slate-900/50 border border-slate-600 p-3 rounded">
-                      <div className="text-xs text-slate-400">📋 Total Requirements</div>
-                      <div className="text-2xl font-bold text-white">
-                        {(regulationResult.coverage_summary?.covered ?? 0) + 
-                         (regulationResult.coverage_summary?.partially_covered ?? 0) + 
-                         (regulationResult.coverage_summary?.not_covered ?? 0)}
-                      </div>
-                      <div className="text-xs text-slate-400">extracted by AI</div>
-                    </div>
-                  </div>
-
-                  {/* All Mappings */}
-                  {regulationResult.all_mappings?.length > 0 && (
-                    <div>
-                      <h4 className="text-white font-medium mb-2">All Requirements ({regulationResult.all_mappings.length})</h4>
-                      <div className="space-y-2 max-h-96 overflow-y-auto">
-                        {regulationResult.all_mappings.map((m, i) => (
-                          <div key={i} className={`p-3 rounded border text-sm ${
-                            m.coverage_status === 'COVERED' ? 'border-green-700 bg-green-900/10' :
-                            m.coverage_status === 'PARTIALLY_COVERED' ? 'border-yellow-700 bg-yellow-900/10' :
-                            'border-red-700 bg-red-900/10'
-                          }`}>
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                  <span className={`text-xs px-2 py-0.5 rounded text-white ${
-                                    m.coverage_status === 'COVERED' ? 'bg-green-700' :
-                                    m.coverage_status === 'PARTIALLY_COVERED' ? 'bg-yellow-700' : 'bg-red-700'
-                                  }`}>
-                                    {m.coverage_status === 'COVERED' ? '✅ COVERED' :
-                                     m.coverage_status === 'PARTIALLY_COVERED' ? '⚠️ PARTIAL' : '❌ GAP'}
-                                  </span>
-                                  <span className={`text-xs px-2 py-0.5 rounded ${
-                                    m.requirement_type === 'MANDATORY' ? 'bg-red-900 text-red-300' :
-                                    m.requirement_type === 'RECOMMENDED' ? 'bg-amber-900 text-amber-300' :
-                                    'bg-slate-700 text-slate-300'
-                                  }`}>{m.requirement_type}</span>
-                                  {m.mapped_controls?.length > 0 && (
-                                    <span className="text-xs text-slate-400">
-                                      Controls: {m.mapped_controls.join(', ')}
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="text-slate-200">{m.requirement_text}</p>
-                              </div>
-                              {m.coverage_status === 'NOT_COVERED' && (
-                                <GenerateDraftButton
-                                  requirement={m}
-                                  framework={regulation.framework_name}
-                                  onSaved={() => { loadAll(); showToast('Draft control added to register', 'success'); }}
-                                  showToast={showToast}
-                                  apiUrl={API_URL}
-                                  tenantId={TENANT_ID}
-                                  authHeaders={authHeaders}
-                                />
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
+            <CardContent className="p-8 text-center space-y-4">
+              <div className="text-4xl">📋</div>
+              <h3 className="text-white text-lg font-medium">Regulatory Analysis has moved</h3>
+              <p className="text-slate-400 text-sm max-w-md mx-auto">
+                Full regulatory analysis — PDF upload, AI requirement extraction, control mapping, gap remediation and issue raising — is now available on the dedicated Regulatory Analysis page.
+              </p>
+              <a href="/regulatory-analysis"
+                className="inline-block px-6 py-2 rounded bg-blue-600 text-white text-sm hover:bg-blue-500">
+                Go to Regulatory Analysis →
+              </a>
             </CardContent>
           </Card>
         )}
-
-        {/* Register tab */}
         {tab === 'register' && (
           <Card className="bg-slate-800/50 border-slate-700">
             <CardHeader>

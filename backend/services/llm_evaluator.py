@@ -240,10 +240,25 @@ async def parse_regulation_requirements(
     where type is MANDATORY | RECOMMENDED | GOOD_TO_HAVE.
     """
     system_message = (
-        "You are a regulatory analyst. Extract each distinct requirement from regulation text "
-        "and classify it as MANDATORY (must/shall/required), RECOMMENDED (should/expected), or "
-        "GOOD_TO_HAVE (may/consider). Deduplicate near-identical items. "
-        "Respond ONLY with valid JSON."
+        "You are a senior banking technology auditor and regulatory analyst. "
+        "Your job is to extract ONLY testable, actionable control requirements from regulation text. "
+        "A requirement is valid ONLY if it can be verified with evidence (logs, reports, configs, screenshots). "
+        "EXCLUDE: scope statements, applicability clauses, definitions, effective dates, legal boilerplate, "
+        "organizational context, and any text that cannot be tested or mapped to a control. "
+        "INCLUDE ONLY: obligations that specify what must be done, how often, by whom, or to what standard. "
+        "Examples of VALID requirements: "
+        "'Backups must be performed daily', "
+        "'DR drills must be conducted every 6 months', "
+        "'Access must be restricted using IAM', "
+        "'Audit logs must be maintained for 2 years'. "
+        "Examples of INVALID requirements (exclude these): "
+        "'Applies to all commercial banks', "
+        "'CICs must comply with these directions', "
+        "'Effective from April 1', "
+        "'These directions are issued under Section 35A'. "
+        "For each valid requirement ask: Can an auditor verify this with evidence? If NO, exclude it. "
+        "Classify as MANDATORY (must/shall/required), RECOMMENDED (should/expected), or GOOD_TO_HAVE (may/consider). "
+        "Deduplicate near-identical items. Respond ONLY with valid JSON."
     )
 
     prompt = f"""Framework: {framework}
