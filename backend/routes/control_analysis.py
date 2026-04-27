@@ -629,3 +629,121 @@ async def workpaper_pdf_get(tenant_id: str = Query("default")):
 async def workpaper_excel_get(tenant_id: str = Query("default")):
     """Convenience GET for downloading the full-register Excel workpaper."""
     return await workpaper_excel(WorkpaperRequest(control_ids=None), tenant_id)
+
+@api_router.post("/controls/generate-draft")
+async def generate_draft_control(
+    request: dict,
+    tenant_id: str = Query("default"),
+):
+    """Generate a draft control from a regulatory gap using LLM."""
+    try:
+        requirement_text = request.get("requirement_text", "")
+        requirement_type = request.get("requirement_type", "MANDATORY")
+        framework = request.get("framework", "")
+        
+        from services.llm_evaluator import _call_gemini
+        
+        system_message = (
+            "You are an expert banking technology risk consultant. "
+            "Generate a precise, auditable control to address a regulatory requirement. "
+            "Use mandatory language (must/shall). Respond ONLY with valid JSON."
+        )
+        
+        prompt = f"""Generate a draft control for this regulatory gap:
+
+Framework: {framework}
+Requirement Type: {requirement_type}
+Requirement: {requirement_text}
+
+Respond with JSON in EXACTLY this schema:
+{{
+  "control_id": "CTRL-DRAFT-001",
+  "name": "<=80 char control name",
+  "description": "mandatory-language description using must/shall",
+  "domain": "Access Control | Data Protection | Network Security | Application Security | Change Management | Incident Response | Business Continuity | Vendor Management | Physical Security | Compliance | Audit | Risk Management | Identity Management | Encryption | Logging & Monitoring | Configuration Management",
+  "owner": "suggested owner role",
+  "type": "TECHNICAL | ADMINISTRATIVE | PHYSICAL",
+  "category": "PREVENTIVE | DETECTIVE | CORRECTIVE",
+  "test_procedure": "step-by-step verifiable test procedure",
+  "frameworks": ["{framework}"],
+  "implementation_steps": ["step 1", "step 2", "step 3"],
+  "estimated_effort": "LOW | MEDIUM | HIGH",
+  "risk_reduction": "brief description of risk reduced"
+}}"""
+
+        import json, re
+        response = await _call_gemini(system_message, prompt)
+        
+        # Extract JSON
+        fenced = re.search(r"```(?:json)?\s*(\{{.*?\}})\s*```", response, re.DOTALL)
+        candidate = fenced.group(1) if fenced else response
+        start = candidate.find("{")
+        end = candidate.rfind("}")
+        draft = json.loads(candidate[start:end+1]) if start != -1 else {}
+        
+        # Add unique ID
+        import uuid
+        draft["id"] = str(uuid.uuid4())
+        draft["tenant_id"] = tenant_id
+        draft["effectiveness"] = "NOT_TESTED"
+        draft["strength_score"] = 55
+        draft["is_draft"] = True
+        draft["source_requirement"] = requirement_text[:200]
+        draft["source_framework"] = framework
+        
+        return {"draft_control": draft, "requirement_text": requirement_text}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/controls/save-draft")
+async def save_draft_control(
+    request: dict,
+    tenant_id: str = Query("default"),
+):
+    """Save a draft control to the control register."""
+    try:
+        control = request.get("control", {})
+        if not control:
+            raise HTTPException(status_code=400, detail="No control provided")
+        
+        service = ControlAnalysisService(tenant_id=tenant_id)
+        
+        # Use existing import logic
+        import uuid
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc).isoformat()
+        
+        doc = {
+            "id": control.get("id") or str(uuid.uuid4()),
+            "tenant_id": tenant_id,
+            "control_id": control.get("control_id", f"CTRL-{uuid.uuid4().hex[:6].upper()}"),
+            "name": control.get("name", ""),
+            "description": control.get("description", ""),
+            "domain": control.get("domain", "Other"),
+            "owner": control.get("owner", ""),
+            "type": control.get("type", "ADMINISTRATIVE"),
+            "category": control.get("category", "PREVENTIVE"),
+            "test_procedure": control.get("test_procedure", ""),
+            "frameworks": control.get("frameworks", []),
+            "effectiveness": "NOT_TESTED",
+            "strength_score": 55,
+            "is_draft": False,
+            "created_at": now,
+            "updated_at": now,
+        }
+        
+        from db import db
+        await db.control_register.update_one(
+            {"id": doc["id"], "tenant_id": tenant_id},
+            {"$set": doc},
+            upsert=True
+        )
+        
+        return {"saved": True, "control_id": doc["control_id"], "id": doc["id"]}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

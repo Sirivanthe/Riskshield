@@ -30,6 +30,84 @@ const authHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+const GenerateDraftButton = ({ requirement, framework, onSaved, showToast, apiUrl, tenantId, authHeaders }) => {
+  const [generating, setGenerating] = React.useState(false);
+  const [draft, setDraft] = React.useState(null);
+  const [saving, setSaving] = React.useState(false);
+
+  const generate = async () => {
+    setGenerating(true);
+    setDraft(null);
+    try {
+      const res = await fetch(`${apiUrl}/api/control-analysis/controls/generate-draft?tenant_id=${tenantId}`, {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          requirement_text: requirement.requirement_text,
+          requirement_type: requirement.requirement_type,
+          framework: framework,
+        }),
+      });
+      if (res.status >= 400) throw new Error('Generation failed');
+      const data = await res.json();
+      setDraft(data.draft_control);
+    } catch (e) {
+      showToast(e.message, 'error');
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch(`${apiUrl}/api/control-analysis/controls/save-draft?tenant_id=${tenantId}`, {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ control: draft }),
+      });
+      if (res.status >= 400) throw new Error('Save failed');
+      setDraft(null);
+      onSaved();
+    } catch (e) {
+      showToast(e.message, 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="flex-shrink-0 space-y-2">
+      {!draft ? (
+        <button onClick={generate} disabled={generating}
+          className="text-xs px-3 py-1.5 rounded border border-blue-500 text-blue-400 hover:bg-blue-900/20 disabled:opacity-50 whitespace-nowrap">
+          {generating ? '⏳ Generating...' : '🤖 Generate Control'}
+        </button>
+      ) : (
+        <div className="w-64 p-3 bg-slate-800 border border-blue-600 rounded space-y-2">
+          <div className="text-xs text-blue-400 font-medium">Draft Control</div>
+          <div className="text-xs text-white font-medium">{draft.name}</div>
+          <div className="text-xs text-slate-400">{draft.domain} · {draft.type}</div>
+          <div className="text-xs text-slate-300">{(draft.description || '').slice(0, 120)}...</div>
+          {draft.estimated_effort && (
+            <div className="text-xs text-slate-400">Effort: <span className="text-yellow-400">{draft.estimated_effort}</span></div>
+          )}
+          <div className="flex gap-1">
+            <button onClick={save} disabled={saving}
+              className="flex-1 text-xs px-2 py-1 rounded bg-green-700 text-white hover:bg-green-600 disabled:opacity-50">
+              {saving ? 'Saving...' : '✅ Add to Register'}
+            </button>
+            <button onClick={() => setDraft(null)}
+              className="text-xs px-2 py-1 rounded border border-slate-600 text-slate-400 hover:text-white">
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ControlAnalysis = () => {
   const [tab, setTab] = useState('register');
   const [controls, setControls] = useState([]);
@@ -676,21 +754,105 @@ const ControlAnalysis = () => {
                 className="w-full bg-slate-700 border border-slate-600 text-white p-2 rounded text-sm" />
               <Button onClick={mapRegulation} disabled={mapping}>{mapping ? 'Mapping...' : 'Map Controls to Regulation'}</Button>
               {regulationResult && (
-                <div className="space-y-3 pt-4 border-t border-slate-700">
-                  <div className="grid grid-cols-4 gap-3">
-                    <div className="bg-slate-900/50 p-3 rounded"><div className="text-xs text-slate-400">Compliance Score</div><div className="text-2xl font-bold text-white">{regulationResult.compliance_score}%</div></div>
-                    <div className="bg-green-900/40 p-3 rounded"><div className="text-xs text-green-300">Covered</div><div className="text-2xl font-bold text-white">{regulationResult.coverage_summary.covered}</div></div>
-                    <div className="bg-yellow-900/40 p-3 rounded"><div className="text-xs text-yellow-300">Partial</div><div className="text-2xl font-bold text-white">{regulationResult.coverage_summary.partially_covered}</div></div>
-                    <div className="bg-red-900/40 p-3 rounded"><div className="text-xs text-red-300">Not Covered</div><div className="text-2xl font-bold text-white">{regulationResult.coverage_summary.not_covered}</div></div>
+                <div className="space-y-4 pt-4 border-t border-slate-700">
+                  
+                  {/* Score Banner */}
+                  <div className={`p-4 rounded-xl border ${
+                    regulationResult.compliance_score >= 80 ? 'bg-green-900/20 border-green-600' :
+                    regulationResult.compliance_score >= 50 ? 'bg-yellow-900/20 border-yellow-600' :
+                    'bg-red-900/20 border-red-600'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-xs text-slate-400 uppercase mb-1">Compliance Score</div>
+                        <div className="text-4xl font-bold text-white">{(regulationResult.compliance_score ?? 0).toFixed(1)}<span className="text-xl text-slate-400">%</span></div>
+                        <div className="text-sm text-slate-400 mt-1">
+                          {regulationResult.compliance_score >= 80 ? '✅ Good compliance coverage' :
+                           regulationResult.compliance_score >= 50 ? '⚠️ Partial coverage — gaps need attention' :
+                           '❌ Significant gaps — controls needed'}
+                        </div>
+                      </div>
+                      <div className="text-xs text-slate-400 text-right">
+                        <div>Score = (Covered + 0.5 × Partial) / Total requirements</div>
+                        <div className="mt-1">COVERED = 2+ controls match · PARTIAL = 1 control matches</div>
+                      </div>
+                    </div>
                   </div>
-                  {regulationResult.gaps?.length > 0 && (
+
+                  {/* Summary Cards */}
+                  <div className="grid grid-cols-4 gap-3">
+                    <div className="bg-green-900/30 border border-green-700 p-3 rounded">
+                      <div className="text-xs text-green-300">✅ Covered</div>
+                      <div className="text-2xl font-bold text-white">{regulationResult.coverage_summary?.covered ?? 0}</div>
+                      <div className="text-xs text-green-400">2+ controls mapped</div>
+                    </div>
+                    <div className="bg-yellow-900/30 border border-yellow-700 p-3 rounded">
+                      <div className="text-xs text-yellow-300">⚠️ Partial</div>
+                      <div className="text-2xl font-bold text-white">{regulationResult.coverage_summary?.partially_covered ?? 0}</div>
+                      <div className="text-xs text-yellow-400">1 control mapped</div>
+                    </div>
+                    <div className="bg-red-900/30 border border-red-700 p-3 rounded">
+                      <div className="text-xs text-red-300">❌ Not Covered</div>
+                      <div className="text-2xl font-bold text-white">{regulationResult.coverage_summary?.not_covered ?? 0}</div>
+                      <div className="text-xs text-red-400">No controls mapped</div>
+                    </div>
+                    <div className="bg-slate-900/50 border border-slate-600 p-3 rounded">
+                      <div className="text-xs text-slate-400">📋 Total Requirements</div>
+                      <div className="text-2xl font-bold text-white">
+                        {(regulationResult.coverage_summary?.covered ?? 0) + 
+                         (regulationResult.coverage_summary?.partially_covered ?? 0) + 
+                         (regulationResult.coverage_summary?.not_covered ?? 0)}
+                      </div>
+                      <div className="text-xs text-slate-400">extracted by AI</div>
+                    </div>
+                  </div>
+
+                  {/* All Mappings */}
+                  {regulationResult.all_mappings?.length > 0 && (
                     <div>
-                      <h4 className="text-white font-medium mb-2">Gaps ({regulationResult.gaps.length})</h4>
-                      <div className="space-y-2 max-h-80 overflow-y-auto">
-                        {regulationResult.gaps.slice(0, 20).map((g, i) => (
-                          <div key={i} className="p-2 bg-slate-900/50 rounded text-sm text-slate-300">
-                            <span className="text-xs text-red-400 mr-2">{g.requirement_type}</span>
-                            {g.requirement_text.substring(0, 200)}
+                      <h4 className="text-white font-medium mb-2">All Requirements ({regulationResult.all_mappings.length})</h4>
+                      <div className="space-y-2 max-h-96 overflow-y-auto">
+                        {regulationResult.all_mappings.map((m, i) => (
+                          <div key={i} className={`p-3 rounded border text-sm ${
+                            m.coverage_status === 'COVERED' ? 'border-green-700 bg-green-900/10' :
+                            m.coverage_status === 'PARTIALLY_COVERED' ? 'border-yellow-700 bg-yellow-900/10' :
+                            'border-red-700 bg-red-900/10'
+                          }`}>
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                  <span className={`text-xs px-2 py-0.5 rounded text-white ${
+                                    m.coverage_status === 'COVERED' ? 'bg-green-700' :
+                                    m.coverage_status === 'PARTIALLY_COVERED' ? 'bg-yellow-700' : 'bg-red-700'
+                                  }`}>
+                                    {m.coverage_status === 'COVERED' ? '✅ COVERED' :
+                                     m.coverage_status === 'PARTIALLY_COVERED' ? '⚠️ PARTIAL' : '❌ GAP'}
+                                  </span>
+                                  <span className={`text-xs px-2 py-0.5 rounded ${
+                                    m.requirement_type === 'MANDATORY' ? 'bg-red-900 text-red-300' :
+                                    m.requirement_type === 'RECOMMENDED' ? 'bg-amber-900 text-amber-300' :
+                                    'bg-slate-700 text-slate-300'
+                                  }`}>{m.requirement_type}</span>
+                                  {m.mapped_controls?.length > 0 && (
+                                    <span className="text-xs text-slate-400">
+                                      Controls: {m.mapped_controls.join(', ')}
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-slate-200">{m.requirement_text}</p>
+                              </div>
+                              {m.coverage_status === 'NOT_COVERED' && (
+                                <GenerateDraftButton
+                                  requirement={m}
+                                  framework={regulation.framework_name}
+                                  onSaved={() => { loadAll(); showToast('Draft control added to register', 'success'); }}
+                                  showToast={showToast}
+                                  apiUrl={API_URL}
+                                  tenantId={TENANT_ID}
+                                  authHeaders={authHeaders}
+                                />
+                              )}
+                            </div>
                           </div>
                         ))}
                       </div>
