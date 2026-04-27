@@ -32,7 +32,7 @@ class BaseLLMClient(ABC):
 class GeminiLLMClient(BaseLLMClient):
     """Direct Gemini REST API client using GOOGLE_API_KEY."""
 
-    DEFAULT_MODEL = "gemini-2.0-flash"
+    DEFAULT_MODEL = "gemini-3-flash-preview"
 
     def __init__(self, config: LLMConfig):
         self.config = config
@@ -403,6 +403,42 @@ class VertexAILLMClient(BaseLLMClient):
         return self._initialize()
 
 
+class KimiLLMClient(BaseLLMClient):
+    """Kimi (Moonshot AI) LLM client — OpenAI-compatible API."""
+
+    BASE_URL = "https://api.moonshot.cn/v1/chat/completions"
+    DEFAULT_MODEL = "moonshot-v1-8k"
+
+    def __init__(self, config: LLMConfig):
+        self.config = config
+        self.model_name = config.model_name or self.DEFAULT_MODEL
+        self.api_key = config.api_key or os.environ.get("KIMI_API_KEY", "")
+
+    async def generate(self, prompt: str, context: str = "", system_prompt: str = "") -> Dict[str, Any]:
+        import httpx
+        if not self.api_key:
+            raise RuntimeError("KIMI_API_KEY is not configured")
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        if context:
+            messages.append({"role": "user", "content": f"Context:\n{context}"})
+        messages.append({"role": "user", "content": prompt})
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            response = await client.post(
+                self.BASE_URL,
+                headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"},
+                json={"model": self.model_name, "messages": messages, "temperature": self.config.temperature, "max_tokens": self.config.max_tokens}
+            )
+            response.raise_for_status()
+            data = response.json()
+        response_text = data["choices"][0]["message"]["content"]
+        return {"response": response_text, "prompt_tokens": data["usage"]["prompt_tokens"], "completion_tokens": data["usage"]["completion_tokens"], "model_name": self.model_name}
+
+    async def health_check(self) -> bool:
+        return bool(self.api_key)
+
+
 class LLMClientFactory:
     """Factory for creating LLM clients based on configuration"""
 
@@ -429,6 +465,8 @@ class LLMClientFactory:
             return AzureLLMClient(config)
         elif config.provider == LLMProvider.VERTEX_AI:
             return VertexAILLMClient(config)
+        elif config.provider == LLMProvider.KIMI:
+            return KimiLLMClient(config)
         elif config.provider in (LLMProvider.GEMINI, LLMProvider.ANTHROPIC, LLMProvider.OPENAI):
             # Gemini REST client handles GEMINI; for ANTHROPIC/OPENAI fallback to Gemini if no dedicated client
             return GeminiLLMClient(config)

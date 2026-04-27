@@ -129,6 +129,7 @@ class LLMProvider(str, Enum):
     OLLAMA = "OLLAMA"
     AZURE = "AZURE"
     VERTEX_AI = "VERTEX_AI"
+    KIMI = "KIMI"
 
 
 class ControlStatus(str, Enum):

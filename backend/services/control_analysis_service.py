@@ -171,15 +171,16 @@ class ControlAnalysisService:
         # Map common column variations
         column_mapping = {
             'control_name': 'name',
-            'control_description': 'description',
             'control_owner': 'owner',
+            'control_title': 'name',
+            'control_reference': 'control_id',
+            'control_description': 'description',
             'control_type': 'type',
-            'control_category': 'category',
-            'testing_procedure': 'test_procedure',
-            'test_script': 'test_procedure'
+            'sub_domain': 'category',
+            'classification': 'domain',
         }
         df = df.rename(columns={k: v for k, v in column_mapping.items() if k in df.columns})
-        
+        df = df.loc[:, ~df.columns.duplicated()]  
         imported_count = 0
         errors = []
         

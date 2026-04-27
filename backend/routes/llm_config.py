@@ -143,6 +143,14 @@ async def list_providers(current_user: User = Depends(get_current_user)):
                 "config_fields": ["vertex_project", "vertex_location", "model_name"],
             },
             {
+                "id": LLMProvider.KIMI.value,
+                "name": "Kimi (Moonshot AI)",
+                "description": "Use your own Kimi API key from Moonshot AI.",
+                "requires_credentials": True,
+                "config_fields": ["api_key", "model_name"],
+                "suggested_models": ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"],
+            },
+            {
                 "id": LLMProvider.MOCK.value,
                 "name": "Mock (Development)",
                 "description": "Mock LLM for development and testing.",
