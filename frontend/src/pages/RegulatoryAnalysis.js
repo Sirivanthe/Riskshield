@@ -80,7 +80,7 @@ const AIDraftButton = ({ gap, framework, onSaved, showToast }) => {
   if (draft) {
     return (
       <div className="mt-3 p-3 bg-slate-800 border border-blue-600 rounded space-y-2">
-        <div className="text-xs text-blue-400 font-medium">🤖 AI-Generated Draft Control</div>
+        <div className="text-xs text-blue-400 font-medium">AI-Generated Draft Control</div>
         <div className="text-sm text-white font-medium">{draft.name}</div>
         <div className="text-xs text-slate-400">{draft.domain} · {draft.type} · {draft.category}</div>
         <div className="text-xs text-slate-300">{(draft.description || '').slice(0, 150)}...</div>
@@ -115,7 +115,7 @@ const AIDraftButton = ({ gap, framework, onSaved, showToast }) => {
   return (
     <button onClick={generate} disabled={generating}
       className="text-xs px-3 py-1.5 rounded border border-blue-500 text-blue-400 hover:bg-blue-900/20 disabled:opacity-50 whitespace-nowrap">
-      {generating ? '⏳ Generating...' : '🤖 AI Draft Control'}
+      {generating ? '⏳ Generating...' : 'AI Draft Control'}
     </button>
   );
 };
@@ -352,7 +352,7 @@ const RegulatoryAnalysis = () => {
                     </div>
                     <div className="text-xs text-slate-400 text-right space-y-1">
                       <div>Score = (Covered + 0.5 × Partial) / Total requirements</div>
-                      <div>Parser: <span className="text-slate-300">{result.parser_used === 'llm' ? '🤖 LLM (Gemini)' : '📐 Rule-based fallback'}</span></div>
+                      <div>Parser: <span className="text-slate-300">{result.parser_used === 'llm' ? 'LLM (Gemini)' : '📐 Rule-based fallback'}</span></div>
                       <div>{result.total_requirements} requirements from <span className="text-slate-300">{result.framework}</span></div>
                     </div>
                   </div>

@@ -1768,7 +1768,7 @@ async def create_ai_control_assessment(
     if not ai_sys:
         raise HTTPException(status_code=404, detail="AI System not found")
 
-    controls = get_ai_framework_controls(assessment_data.framework, ai_sys.get('risk_category', 'HIGH'))
+    controls = await get_ai_framework_controls(assessment_data.framework, ai_sys.get('risk_category', 'HIGH'))
 
     control_results = []
     required_actions = []
@@ -1827,7 +1827,17 @@ async def _run_ai_assessment_async(assessment_id: str):
             "data_types": ai_sys.get("data_types_processed", []),
         } if ai_sys else {}
 
-        llm_client = LLMClientFactory.get_client()
+        # Try LLMClientFactory (admin panel config) first, fall back to llm_evaluator (env var)
+        try:
+            llm_client = LLMClientFactory.get_client()
+            async def _llm_generate(prompt: str) -> str:
+                result = await llm_client.generate(prompt)
+                return result.get("response", "{}")
+        except Exception:
+            from services.llm_evaluator import _call_gemini
+            async def _llm_generate(prompt: str) -> str:
+                return await _call_gemini("You are an AI compliance expert. Respond with JSON only.", prompt)
+
         control_results = []
         findings = []
         recommendations = []
@@ -1857,8 +1867,7 @@ Based on the AI system context, assess this control and respond in this exact JS
 Respond with JSON only, no other text."""
 
             try:
-                result = await llm_client.generate(prompt)
-                raw = result.get("response", "{}")
+                raw = await _llm_generate(prompt)
                 # Strip markdown code fences if present
                 raw = raw.strip()
                 if raw.startswith("```"):
@@ -1961,7 +1970,6 @@ async def update_ai_control_result(
     if not assessment:
         raise HTTPException(status_code=404, detail="Assessment not found")
     
-    # Update control result
     for ctrl in assessment.get('control_results', []):
         if ctrl['control_id'] == control_id:
             ctrl['status'] = status
@@ -1974,8 +1982,120 @@ async def update_ai_control_result(
         {"id": assessment_id},
         {"$set": {"control_results": assessment['control_results']}}
     )
-    
     return {"message": "Control result updated"}
+
+
+@api_router.post("/ai-assessments/{assessment_id}/control/{control_id}/evidence")
+async def upload_control_evidence(
+    assessment_id: str,
+    control_id: str,
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user)
+):
+    """Upload an evidence document for a specific control in an AI assessment."""
+    assessment = await db.ai_control_assessments.find_one({"id": assessment_id}, {"_id": 0})
+    if not assessment:
+        raise HTTPException(status_code=404, detail="Assessment not found")
+
+    content = await file.read()
+    text = ""
+    if file.filename.endswith(".pdf"):
+        try:
+            import pdfplumber, io
+            with pdfplumber.open(io.BytesIO(content)) as pdf:
+                text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+        except Exception:
+            text = content.decode("utf-8", errors="ignore")
+    else:
+        text = content.decode("utf-8", errors="ignore")
+
+    # Find the control
+    ctrl_doc = next((c for c in assessment.get("control_results", []) if c["control_id"] == control_id), None)
+    if not ctrl_doc:
+        raise HTTPException(status_code=404, detail="Control not found in assessment")
+
+    # Use LLM to evaluate the evidence against the control requirement
+    from services.llm_evaluator import _call_gemini
+    prompt = f"""You are an AI compliance auditor. A document has been uploaded as evidence for a control.
+
+Control: {ctrl_doc['control_name']}
+Requirement: {ctrl_doc['requirement']}
+Evidence required: {', '.join(ctrl_doc.get('evidence_required', []))}
+
+Document content (first 3000 chars):
+{text[:3000]}
+
+Evaluate whether this document satisfies the control requirement. Respond in this exact JSON format:
+{{
+  "status": "COMPLIANT" | "PARTIALLY_COMPLIANT" | "NON_COMPLIANT",
+  "confidence": 0.0-1.0,
+  "finding": "one sentence assessment of whether this evidence satisfies the requirement",
+  "satisfied_items": ["list of evidence_required items this document satisfies"],
+  "remaining_gaps": ["list of evidence_required items still missing"]
+}}
+Respond with JSON only."""
+
+    try:
+        raw = await _call_gemini("You are an AI compliance auditor. Respond with JSON only.", prompt)
+        raw = raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
+        import json
+        evaluated = json.loads(raw)
+    except Exception:
+        evaluated = {"status": "PARTIALLY_COMPLIANT", "confidence": 0.5, "finding": f"Document '{file.filename}' uploaded but could not be automatically evaluated.", "satisfied_items": [], "remaining_gaps": ctrl_doc.get("evidence_required", [])}
+
+    # Store the evidence record and update control status
+    evidence_record = {
+        "filename": file.filename,
+        "uploaded_at": datetime.now(timezone.utc).isoformat(),
+        "uploaded_by": current_user.id,
+        "evaluation": evaluated
+    }
+
+    for ctrl in assessment["control_results"]:
+        if ctrl["control_id"] == control_id:
+            ctrl["status"] = evaluated.get("status", ctrl["status"])
+            ctrl["findings"] = evaluated.get("finding", "")
+            ctrl["evidence_gaps"] = evaluated.get("remaining_gaps", [])
+            ctrl["confidence"] = evaluated.get("confidence", 0.5)
+            if "evidence_documents" not in ctrl:
+                ctrl["evidence_documents"] = []
+            ctrl["evidence_documents"].append(evidence_record)
+            break
+
+    await db.ai_control_assessments.update_one(
+        {"id": assessment_id},
+        {"$set": {"control_results": assessment["control_results"]}}
+    )
+
+    return {"message": "Evidence evaluated", "evaluation": evaluated, "filename": file.filename}
+
+
+@api_router.delete("/ai-assessments/{assessment_id}")
+async def delete_ai_assessment(
+    assessment_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Delete an AI control assessment."""
+    result = await db.ai_control_assessments.delete_one({"id": assessment_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Assessment not found")
+    return {"deleted": True, "id": assessment_id}
+
+
+@api_router.delete("/ai-systems/{system_id}")
+async def delete_ai_system(
+    system_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Delete an AI system and all its assessments."""
+    sys_result = await db.ai_systems.delete_one({"id": system_id})
+    if sys_result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="AI system not found")
+    # Cascade delete assessments
+    deleted = await db.ai_control_assessments.delete_many({"ai_system_id": system_id})
+    return {"deleted": True, "id": system_id, "assessments_deleted": deleted.deleted_count}
+
+
 
 
 @api_router.post("/ai-assessments/{assessment_id}/complete")
@@ -2035,43 +2155,158 @@ async def complete_ai_assessment(
 
 @api_router.get("/ai-frameworks")
 async def get_ai_frameworks(current_user: User = Depends(get_current_user)):
-    """Get available AI compliance frameworks"""
-    return {
-        "frameworks": [
-            {
-                "id": "EU_AI_ACT",
-                "name": "EU AI Act",
-                "description": "European Union Artificial Intelligence Act - comprehensive AI regulation",
-                "categories": [
-                    "Risk Classification",
-                    "Transparency",
-                    "Human Oversight",
-                    "Data Governance",
-                    "Technical Documentation",
-                    "Accuracy & Robustness",
-                    "Cybersecurity"
-                ],
-                "risk_categories": ["UNACCEPTABLE", "HIGH", "LIMITED", "MINIMAL"]
-            },
-            {
-                "id": "NIST_AI_RMF",
-                "name": "NIST AI Risk Management Framework",
-                "description": "NIST framework for managing AI risks throughout the AI lifecycle",
-                "categories": [
-                    "GOVERN",
-                    "MAP",
-                    "MEASURE",
-                    "MANAGE"
-                ],
-                "functions": [
-                    "Govern - Cultivate AI Risk Management Culture",
-                    "Map - Contextualize AI System Risks",
-                    "Measure - Analyze and Monitor Risks",
-                    "Manage - Prioritize and Act on Risks"
-                ]
-            }
-        ]
-    }
+    """Get available AI compliance frameworks from MongoDB."""
+    frameworks = await db.ai_frameworks.find({"active": True}, {"_id": 0}).to_list(100)
+    return {"frameworks": frameworks}
+
+
+@api_router.post("/ai-frameworks")
+async def create_ai_framework(
+    framework: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Create a new AI compliance framework (admin only)."""
+    if current_user.role not in ["admin", "super_admin"]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    if not framework.get("id") or not framework.get("name"):
+        raise HTTPException(status_code=400, detail="id and name are required")
+    existing = await db.ai_frameworks.find_one({"id": framework["id"]})
+    if existing:
+        raise HTTPException(status_code=409, detail=f"Framework {framework['id']} already exists")
+    framework.setdefault("active", True)
+    framework.setdefault("categories", [])
+    framework.setdefault("color", "#475569")
+    framework.setdefault("bg_color", "#f1f5f9")
+    framework.setdefault("flag", "🌐")
+    framework["created_by"] = current_user.id
+    framework["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.ai_frameworks.insert_one(framework)
+    framework.pop("_id", None)
+    return framework
+
+
+@api_router.put("/ai-frameworks/{framework_id}")
+async def update_ai_framework(
+    framework_id: str,
+    updates: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Update an AI framework (admin only)."""
+    if current_user.role not in ["admin", "super_admin"]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    existing = await db.ai_frameworks.find_one({"id": framework_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Framework not found")
+    updates.pop("id", None)
+    updates.pop("_id", None)
+    updates["updated_by"] = current_user.id
+    updates["updated_at"] = datetime.now(timezone.utc).isoformat()
+    await db.ai_frameworks.update_one({"id": framework_id}, {"$set": updates})
+    updated = await db.ai_frameworks.find_one({"id": framework_id}, {"_id": 0})
+    return updated
+
+
+@api_router.delete("/ai-frameworks/{framework_id}")
+async def delete_ai_framework(
+    framework_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Deactivate (soft-delete) an AI framework. Controls are preserved."""
+    if current_user.role not in ["admin", "super_admin"]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    result = await db.ai_frameworks.update_one(
+        {"id": framework_id}, {"$set": {"active": False}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Framework not found")
+    ctrl_count = await db.ai_framework_controls.count_documents({"framework": framework_id})
+    return {"deactivated": True, "id": framework_id, "controls_preserved": ctrl_count}
+
+
+
+@api_router.get("/ai-framework-controls")
+async def list_ai_framework_controls(
+    framework: Optional[str] = None,
+    category: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """List all AI framework controls. Optionally filter by framework or category."""
+    query: Dict[str, Any] = {}
+    if framework:
+        query["framework"] = framework
+    if category:
+        query["category"] = category
+    controls = await db.ai_framework_controls.find(query, {"_id": 0}).to_list(500)
+    return controls
+
+
+@api_router.get("/ai-framework-controls/{control_id}")
+async def get_ai_framework_control(
+    control_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get a single AI framework control by id."""
+    control = await db.ai_framework_controls.find_one({"id": control_id}, {"_id": 0})
+    if not control:
+        raise HTTPException(status_code=404, detail="Control not found")
+    return control
+
+
+@api_router.post("/ai-framework-controls")
+async def create_ai_framework_control(
+    control: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Create a new AI framework control (admin only)."""
+    if current_user.role not in ["admin", "super_admin"]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    if not control.get("id") or not control.get("framework"):
+        raise HTTPException(status_code=400, detail="id and framework are required")
+    existing = await db.ai_framework_controls.find_one({"id": control["id"]})
+    if existing:
+        raise HTTPException(status_code=409, detail=f"Control {control['id']} already exists")
+    control["created_by"] = current_user.id
+    control["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.ai_framework_controls.insert_one(control)
+    control.pop("_id", None)
+    return control
+
+
+@api_router.put("/ai-framework-controls/{control_id}")
+async def update_ai_framework_control(
+    control_id: str,
+    updates: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Update an AI framework control (admin only)."""
+    if current_user.role not in ["admin", "super_admin"]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    existing = await db.ai_framework_controls.find_one({"id": control_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Control not found")
+    updates.pop("id", None)
+    updates.pop("_id", None)
+    updates["updated_by"] = current_user.id
+    updates["updated_at"] = datetime.now(timezone.utc).isoformat()
+    await db.ai_framework_controls.update_one({"id": control_id}, {"$set": updates})
+    updated = await db.ai_framework_controls.find_one({"id": control_id}, {"_id": 0})
+    return updated
+
+
+@api_router.delete("/ai-framework-controls/{control_id}")
+async def delete_ai_framework_control(
+    control_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Delete an AI framework control (admin only)."""
+    if current_user.role not in ["admin", "super_admin"]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    result = await db.ai_framework_controls.delete_one({"id": control_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Control not found")
+    return {"deleted": True, "id": control_id}
+
+
 
 
 # ============ HELPER FUNCTIONS ============
@@ -2113,42 +2348,21 @@ def get_framework_requirements(framework: str) -> List[Dict]:
     return requirements.get(framework, [])
 
 
-def get_ai_framework_controls(framework: str, risk_category: str) -> List[Dict]:
-    """Get AI-specific controls for a framework"""
-    eu_ai_act_controls = [
-        {"id": "EU-AI-001", "name": "AI System Risk Classification", "category": "Risk Classification", "requirement": "Article 6 - Classification rules for high-risk AI systems", "mandatory": True, "evidence_required": ["Risk classification documentation", "Impact assessment"], "guidance": "Document the AI system's risk category based on intended use and potential impact"},
-        {"id": "EU-AI-002", "name": "Risk Management System", "category": "Risk Management", "requirement": "Article 9 - Establish and maintain risk management system", "mandatory": True, "evidence_required": ["Risk management policy", "Risk register", "Mitigation plans"], "guidance": "Implement continuous risk identification, analysis, and mitigation"},
-        {"id": "EU-AI-003", "name": "Data Governance Framework", "category": "Data Governance", "requirement": "Article 10 - Data and data governance requirements", "mandatory": True, "evidence_required": ["Data quality documentation", "Training data governance"], "guidance": "Ensure training, validation, and testing data sets are relevant, representative, and free of errors"},
-        {"id": "EU-AI-004", "name": "Technical Documentation", "category": "Documentation", "requirement": "Article 11 - Technical documentation requirements", "mandatory": True, "evidence_required": ["System architecture", "Algorithm documentation", "Training methodology"], "guidance": "Maintain comprehensive technical documentation throughout AI lifecycle"},
-        {"id": "EU-AI-005", "name": "Record Keeping", "category": "Logging", "requirement": "Article 12 - Record-keeping and logging", "mandatory": True, "evidence_required": ["Audit logs", "Decision logs", "Performance logs"], "guidance": "Implement automatic logging of system operations"},
-        {"id": "EU-AI-006", "name": "Transparency to Users", "category": "Transparency", "requirement": "Article 13 - Transparency and provision of information", "mandatory": True, "evidence_required": ["User documentation", "Capability statements", "Limitation disclosures"], "guidance": "Provide clear information about AI system capabilities and limitations"},
-        {"id": "EU-AI-007", "name": "Human Oversight Measures", "category": "Human Oversight", "requirement": "Article 14 - Human oversight requirements", "mandatory": True, "evidence_required": ["Oversight procedures", "Human-in-the-loop documentation"], "guidance": "Enable human oversight including ability to override AI decisions"},
-        {"id": "EU-AI-008", "name": "Accuracy and Robustness", "category": "Technical", "requirement": "Article 15 - Accuracy, robustness, and cybersecurity", "mandatory": True, "evidence_required": ["Accuracy metrics", "Robustness testing", "Security assessment"], "guidance": "Ensure appropriate level of accuracy, robustness, and security"},
-        {"id": "EU-AI-009", "name": "Bias and Fairness Testing", "category": "Fairness", "requirement": "Recital 47 - Bias prevention measures", "mandatory": risk_category in ["HIGH", "UNACCEPTABLE"], "evidence_required": ["Bias assessment", "Fairness metrics", "Mitigation documentation"], "guidance": "Test for and mitigate algorithmic bias"},
-        {"id": "EU-AI-010", "name": "Conformity Assessment", "category": "Compliance", "requirement": "Article 43 - Conformity assessment", "mandatory": risk_category == "HIGH", "evidence_required": ["Conformity certificate", "Assessment report"], "guidance": "Complete conformity assessment before market deployment"},
-    ]
-    
-    nist_ai_rmf_controls = [
-        {"id": "NIST-GOV-001", "name": "AI Risk Management Policy", "category": "GOVERN", "requirement": "GOVERN 1.1 - Legal and regulatory requirements are identified", "mandatory": True, "evidence_required": ["AI policy document", "Regulatory mapping"], "guidance": "Establish policy framework for AI risk management"},
-        {"id": "NIST-GOV-002", "name": "Accountability Structure", "category": "GOVERN", "requirement": "GOVERN 2.1 - Roles and responsibilities established", "mandatory": True, "evidence_required": ["RACI matrix", "Role definitions"], "guidance": "Define clear accountability for AI systems"},
-        {"id": "NIST-GOV-003", "name": "Risk Culture", "category": "GOVERN", "requirement": "GOVERN 3.1 - Risk management culture established", "mandatory": True, "evidence_required": ["Training records", "Awareness programs"], "guidance": "Foster organizational AI risk awareness"},
-        {"id": "NIST-MAP-001", "name": "System Context Documentation", "category": "MAP", "requirement": "MAP 1.1 - Intended purpose and context documented", "mandatory": True, "evidence_required": ["Purpose statement", "Use case documentation"], "guidance": "Document the AI system's intended context and deployment environment"},
-        {"id": "NIST-MAP-002", "name": "Stakeholder Identification", "category": "MAP", "requirement": "MAP 1.5 - Stakeholders identified and engaged", "mandatory": True, "evidence_required": ["Stakeholder register", "Engagement records"], "guidance": "Identify and engage relevant stakeholders"},
-        {"id": "NIST-MAP-003", "name": "Risk Identification", "category": "MAP", "requirement": "MAP 2.1 - AI risks are identified", "mandatory": True, "evidence_required": ["Risk inventory", "Threat assessment"], "guidance": "Systematically identify AI-specific risks"},
-        {"id": "NIST-MEA-001", "name": "Performance Metrics", "category": "MEASURE", "requirement": "MEASURE 1.1 - Metrics for AI risks established", "mandatory": True, "evidence_required": ["Metrics definition", "Measurement procedures"], "guidance": "Define and track meaningful AI risk metrics"},
-        {"id": "NIST-MEA-002", "name": "Trustworthiness Evaluation", "category": "MEASURE", "requirement": "MEASURE 2.1 - AI systems evaluated for trustworthiness", "mandatory": True, "evidence_required": ["Evaluation report", "Testing results"], "guidance": "Evaluate AI trustworthiness characteristics"},
-        {"id": "NIST-MEA-003", "name": "Bias Assessment", "category": "MEASURE", "requirement": "MEASURE 2.7 - Bias assessed and documented", "mandatory": True, "evidence_required": ["Bias analysis", "Fairness metrics"], "guidance": "Assess and document potential biases"},
-        {"id": "NIST-MAN-001", "name": "Risk Prioritization", "category": "MANAGE", "requirement": "MANAGE 1.1 - AI risks prioritized", "mandatory": True, "evidence_required": ["Prioritized risk list", "Treatment decisions"], "guidance": "Prioritize risks based on impact and likelihood"},
-        {"id": "NIST-MAN-002", "name": "Risk Treatment", "category": "MANAGE", "requirement": "MANAGE 2.1 - Risk treatment strategies implemented", "mandatory": True, "evidence_required": ["Treatment plans", "Implementation evidence"], "guidance": "Implement appropriate risk treatment strategies"},
-        {"id": "NIST-MAN-003", "name": "Continuous Monitoring", "category": "MANAGE", "requirement": "MANAGE 4.1 - Risks monitored on ongoing basis", "mandatory": True, "evidence_required": ["Monitoring reports", "Alert records"], "guidance": "Establish continuous AI risk monitoring"},
-    ]
-    
-    if framework == "EU_AI_ACT":
-        return eu_ai_act_controls
-    elif framework == "NIST_AI_RMF":
-        return nist_ai_rmf_controls
-    else:
-        return []
+async def get_ai_framework_controls(framework: str, risk_category: str) -> List[Dict]:
+    """
+    Fetch AI framework controls from MongoDB (seeded from seeds/ai_framework_controls.py).
+    Filters by framework and applies risk_category_filter so only relevant controls
+    are included in the assessment. Falls back to empty list if collection is empty.
+    """
+    query: Dict[str, Any] = {"framework": framework}
+    controls = await db.ai_framework_controls.find(query, {"_id": 0}).to_list(200)
+
+    # Filter by risk category — controls tagged ["ALL"] always apply
+    def applies(control: Dict) -> bool:
+        cat_filter = control.get("risk_category_filter", ["ALL"])
+        return "ALL" in cat_filter or risk_category in cat_filter
+
+    return [c for c in controls if applies(c)]
 
 
 # ============ AUTOMATED CONTROL TESTING ROUTES ============
@@ -2732,6 +2946,11 @@ async def startup():
     """Initialize on startup"""
     await init_demo_users()
     await init_indexes()
+    # Seed AI framework controls into MongoDB (idempotent — only inserts new controls)
+    from seeds.ai_framework_controls import seed_ai_framework_controls
+    await seed_ai_framework_controls()
+    from seeds.ai_frameworks import seed_ai_frameworks
+    await seed_ai_frameworks()
     # Load persisted LLM config (provider + model + user-supplied api_key)
     await LLMClientFactory.load_from_db()
     # Load persisted ServiceNow integration credentials (Basic or API token)
