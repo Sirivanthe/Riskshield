@@ -82,34 +82,20 @@ code {
     }
 }
 
-@layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
-    }
-
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit;
-        margin-right: inherit;
-        margin-top: inherit;
-        margin-bottom: inherit;
-        padding-left: inherit;
-        padding-right: inherit;
-        padding-top: inherit;
-        padding-bottom: inherit;
-        column-gap: inherit;
-        row-gap: inherit;
-        gap: inherit;
-        border-left-width: inherit;
-        border-right-width: inherit;
-        border-top-width: inherit;
-        border-bottom-width: inherit;
-        border-left-style: inherit;
-        border-right-style: inherit;
-        border-top-style: inherit;
-        border-bottom-style: inherit;
-        border-left-color: inherit;
-        border-right-color: inherit;
-        border-top-color: inherit;
-        border-bottom-color: inherit;
-    }
-}
+/* ── Force white backgrounds and dark text on all Tailwind dark classes ── */
+.bg-gray-50, .bg-gray-50 { background-color: #f8fafc !important; }
+.bg-white, .bg-white { background-color: #ffffff !important; }
+.bg-gray-100, .bg-gray-100 { background-color: #f1f5f9 !important; }
+.bg-gray-200, .bg-gray-600 { background-color: #e2e8f0 !important; }
+[class*="bg-gray-50\/"], [class*="bg-white\/"], [class*="bg-gray-100\/"] { background-color: #ffffff !important; }
+.text-white    { color: #0f172a !important; }
+.text-gray-900, .text-gray-800 { color: #0f172a !important; }
+.text-gray-700 { color: #334155 !important; }
+.text-gray-500 { color: #64748b !important; }
+.text-gray-500 { color: #64748b !important; }
+.text-gray-700  { color: #374151 !important; }
+.text-gray-500  { color: #6b7280 !important; }
+.border-gray-200, .border-gray-200, .border-gray-100 { border-color: #e2e8f0 !important; }
+.border-gray-200, .border-gray-300 { border-color: #e2e8f0 !important; }
+.hover\:bg-gray-100:hover, .hover\:bg-gray-200:hover { background-color: #eff6ff !important; }
+h1, h2 { color: #003087 !important; }

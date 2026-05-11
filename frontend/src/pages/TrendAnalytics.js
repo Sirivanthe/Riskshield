@@ -78,16 +78,16 @@ const TrendAnalytics = ({ user }) => {
       if (isImproving) {
         return <span className="text-emerald-400">↑</span>;
       } else if (comp.change_percent === 0) {
-        return <span className="text-gray-400">→</span>;
+        return <span className="text-gray-500">→</span>;
       } else {
         return <span className="text-red-400">↓</span>;
       }
     };
 
     const getTrendColor = () => {
-      if (!comp) return 'text-gray-400';
+      if (!comp) return 'text-gray-500';
       const isImproving = inverted ? comp.change_percent < 0 : comp.change_percent > 0;
-      return isImproving ? 'text-emerald-400' : comp.change_percent === 0 ? 'text-gray-400' : 'text-red-400';
+      return isImproving ? 'text-emerald-400' : comp.change_percent === 0 ? 'text-gray-500' : 'text-red-400';
     };
 
     return (
@@ -119,7 +119,7 @@ const TrendAnalytics = ({ user }) => {
   };
 
   const MiniChart = ({ data, color }) => {
-    if (!data || data.length === 0) return <div className="text-slate-500 text-sm">No data</div>;
+    if (!data || data.length === 0) return <div className="text-gray-500 text-sm">No data</div>;
     
     const max = Math.max(...data);
     const min = Math.min(...data);
@@ -155,7 +155,7 @@ const TrendAnalytics = ({ user }) => {
             <CardTitle className="text-lg text-white">{title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-48 flex items-center justify-center text-slate-500">
+            <div className="h-48 flex items-center justify-center text-gray-500">
               No data available
             </div>
           </CardContent>
@@ -294,7 +294,7 @@ const TrendAnalytics = ({ user }) => {
         </div>
 
         {error && (
-          <div className="bg-red-900/30 border border-red-500 text-red-300 p-4 rounded-lg">
+          <div className="bg-red-900/30 border border-red-500 text-red-700 p-4 rounded-lg">
             {error}
           </div>
         )}
@@ -309,7 +309,7 @@ const TrendAnalytics = ({ user }) => {
           <MetricCard 
             title="Compliance Score" 
             metric="compliance_score" 
-            color="text-blue-400"
+            color="text-blue-700"
           />
           <MetricCard 
             title="Control Effectiveness" 
@@ -334,7 +334,7 @@ const TrendAnalytics = ({ user }) => {
           <TrendChart 
             title="Compliance Score Trend" 
             metric="compliance_score" 
-            color="text-blue-400"
+            color="text-blue-700"
           />
           <TrendChart 
             title="Control Effectiveness Trend" 
