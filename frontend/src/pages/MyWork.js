@@ -6,8 +6,8 @@ import { api } from '@/App';
 // near-SLA issues, issues I own, and my running assessments.
 
 const sectionStyle = {
-  background: '#0f172a',
-  border: '1px solid #1e293b',
+  background: '#1e293b',
+  border: '1px solid #334155',
   borderRadius: '12px',
   padding: '18px',
   marginBottom: '18px',
@@ -37,7 +37,7 @@ const rowStyle = {
   justifyContent: 'space-between',
   alignItems: 'center',
   padding: '10px 12px',
-  background: '#0b1220',
+  background: '#0f172a',
   border: '1px solid #1e293b',
   borderRadius: '8px',
   marginBottom: '8px',
@@ -61,14 +61,14 @@ const MyWork = ({ user }) => {
 
   if (loading) {
     return (
-      <div className="p-8" style={{ background: '#0b1220', minHeight: '100vh' }} data-testid="my-work-loading">
-        <div style={{ color: '#94a3b8' }}>Loading your inbox…</div>
-      </div>
-    );
+    <div className="p-8" style={{ background: '#0f172a', minHeight: '100vh' }} data-testid="my-work-loading">
+      <div style={{ color: '#94a3b8' }}>Loading your inbox…</div>
+    </div>
+  );
   }
   if (err) {
     return (
-      <div className="p-8" style={{ background: '#0b1220', minHeight: '100vh' }} data-testid="my-work-error">
+      <div className="p-8" style={{ background: '#0f172a', minHeight: '100vh' }} data-testid="my-work-error">
         <div style={{ color: '#f87171' }}>Failed to load: {err}</div>
       </div>
     );
@@ -77,7 +77,7 @@ const MyWork = ({ user }) => {
   const c = data?.counts || {};
 
   return (
-    <div className="p-8" style={{ background: '#0b1220', minHeight: '100vh' }} data-testid="my-work-page">
+    <div className="p-8" style={{ background: '#0f172a', minHeight: '100vh' }} data-testid="my-work-page">
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
         <div style={{ marginBottom: '20px' }}>
           <div style={{ fontSize: '12px', color: '#64748b', letterSpacing: '0.12em', textTransform: 'uppercase' }}>

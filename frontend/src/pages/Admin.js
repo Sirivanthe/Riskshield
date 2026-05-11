@@ -681,7 +681,7 @@ const Admin = ({ user }) => {
                         Tokens: {testResult.tokens?.prompt} prompt, {testResult.tokens?.completion} completion
                       </div>
                       {testResult.response && (
-                        <div style={{ fontSize: '13px', color: '#334155', marginTop: '8px', padding: '8px', background: '#fff', borderRadius: '4px' }}>
+                        <div style={{ fontSize: '13px', color: '#f8fafc', marginTop: '8px', padding: '8px', background: '#1e293b', borderRadius: '4px' }}>
                           <strong>Response:</strong> {testResult.response.substring(0, 300)}...
                         </div>
                       )}
@@ -792,7 +792,7 @@ const Admin = ({ user }) => {
             }}
             onClick={(e) => { if (e.target === e.currentTarget) setSwitchProvider(null); }}
           >
-            <div style={{ background: '#fff', borderRadius: '12px', padding: '24px', width: '100%', maxWidth: '480px' }}>
+            <div style={{ background: '#1e293b', borderRadius: '12px', padding: '24px', width: '100%', maxWidth: '480px' }}>
               <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0f172a', marginBottom: '4px' }}>
                 Switch to {switchProvider.name}
               </h3>
@@ -986,8 +986,8 @@ const Admin = ({ user }) => {
                         borderRadius: '8px',
                         fontSize: '13px',
                         fontWeight: 600,
-                        background: snowForm.auth_type === 'basic' ? '#fff' : 'transparent',
-                        color: snowForm.auth_type === 'basic' ? '#0f172a' : '#64748b',
+                        background: snowForm.auth_type === 'basic' ? '#1e293b' : 'transparent',
+                        color: snowForm.auth_type === 'basic' ? '#f8fafc' : '#64748b',
                         boxShadow: snowForm.auth_type === 'basic' ? '0 1px 2px rgba(15,23,42,0.08)' : 'none',
                         border: 'none', cursor: 'pointer',
                       }}
@@ -1003,8 +1003,8 @@ const Admin = ({ user }) => {
                         borderRadius: '8px',
                         fontSize: '13px',
                         fontWeight: 600,
-                        background: snowForm.auth_type === 'token' ? '#fff' : 'transparent',
-                        color: snowForm.auth_type === 'token' ? '#0f172a' : '#64748b',
+                        background: snowForm.auth_type === 'token' ? '#1e293b' : 'transparent',
+                        color: snowForm.auth_type === 'token' ? '#f8fafc' : '#64748b',
                         boxShadow: snowForm.auth_type === 'token' ? '0 1px 2px rgba(15,23,42,0.08)' : 'none',
                         border: 'none', cursor: 'pointer',
                       }}

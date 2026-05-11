@@ -121,7 +121,7 @@ const Dashboard = ({ user }) => {
   };
 
   return (
-    <div className="p-8 min-h-screen" style={{ background: '#0b1220' }} data-testid="command-center">
+    <div className="p-8 min-h-screen" style={{ background: '#0f172a' }} data-testid="command-center">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-10">
@@ -147,8 +147,8 @@ const Dashboard = ({ user }) => {
               gap: '12px',
               padding: '14px',
               borderRadius: '14px',
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(148,163,184,0.14)',
+              background: '#1e293b',
+              border: '1px solid #334155',
             }}
           >
             {health.pills.map((p, i) => (
@@ -163,17 +163,17 @@ const Dashboard = ({ user }) => {
                   gap: '10px',
                   padding: '8px 12px',
                   borderRadius: '10px',
-                  background: 'rgba(15,23,42,0.4)',
+                  background: '#1e293b',
                   textDecoration: 'none',
                   color: 'inherit',
                   transition: 'background 0.15s, transform 0.15s',
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.background = 'rgba(30,41,59,0.8)';
+                  e.currentTarget.style.background = '#334155';
                   e.currentTarget.style.transform = 'translateY(-1px)';
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.background = 'rgba(15,23,42,0.4)';
+                  e.currentTarget.style.background = '#1e293b';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
@@ -226,8 +226,8 @@ const Dashboard = ({ user }) => {
                 flexDirection: 'column',
                 padding: '28px',
                 borderRadius: '18px',
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)',
-                border: '1px solid rgba(148,163,184,0.18)',
+                background: '#1e293b',
+                border: '1px solid #334155',
                 textDecoration: 'none',
                 color: 'inherit',
                 minHeight: '260px',
@@ -241,7 +241,7 @@ const Dashboard = ({ user }) => {
               }}
               onMouseOut={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.borderColor = 'rgba(148,163,184,0.18)';
+                e.currentTarget.style.borderColor = '#334155';
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >

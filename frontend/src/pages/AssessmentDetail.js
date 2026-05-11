@@ -67,7 +67,7 @@ const AssessmentDetail = ({ user }) => {
   }
 
   return (
-    <div data-testid="assessment-detail-page">
+    <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="assessment-detail-page">
       <div className="page-header">
         <div className="flex justify-between items-center">
           <div>
@@ -289,7 +289,7 @@ const AssessmentDetail = ({ user }) => {
                   {assessment.risks.map((risk) => (
                     <tr key={risk.id} data-testid={`risk-row-${risk.id}`}>
                       <td>
-                        <div style={{ fontWeight: '600', color: '#0f172a', marginBottom: '4px' }}>{risk.title}</div>
+                        <div style={{ fontWeight: '600', color: '#f8fafc', marginBottom: '4px' }}>{risk.title}</div>
                         <div style={{ fontSize: '13px', color: '#64748b' }}>{risk.description}</div>
                       </td>
                       <td>
@@ -338,7 +338,7 @@ const AssessmentDetail = ({ user }) => {
                   {assessment.controls.map((control) => (
                     <tr key={control.id} data-testid={`control-row-${control.id}`}>
                       <td>
-                        <div style={{ fontWeight: '600', color: '#0f172a', marginBottom: '4px' }}>{control.name}</div>
+                        <div style={{ fontWeight: '600', color: '#f8fafc', marginBottom: '4px' }}>{control.name}</div>
                         <div style={{ fontSize: '13px', color: '#64748b' }}>{control.description}</div>
                       </td>
                       <td>

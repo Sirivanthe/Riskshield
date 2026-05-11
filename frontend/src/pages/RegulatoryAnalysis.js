@@ -283,7 +283,7 @@ const RegulatoryAnalysis = () => {
   const score = result?.compliance_score ?? 0;
 
   return (
-    <div className="p-6 bg-slate-900 min-h-screen" data-testid="regulatory-analysis-page">
+    <div className="p-6 min-h-screen" style={{ background: '#0f172a' }} data-testid="regulatory-analysis-page">
       <div className="max-w-7xl mx-auto space-y-6">
 
         {/* Header */}

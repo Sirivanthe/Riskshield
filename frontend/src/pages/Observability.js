@@ -35,7 +35,7 @@ const Observability = ({ user }) => {
   }
 
   return (
-    <div data-testid="observability-page">
+    <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="observability-page">
       <div className="page-header">
         <div className="flex justify-between items-center">
           <div>
@@ -67,7 +67,7 @@ const Observability = ({ user }) => {
           <>
             {/* Model Performance Section */}
             <div className="mb-6">
-              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#0f172a', marginBottom: '16px' }}>Model Performance</h2>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#f8fafc', marginBottom: '16px' }}>Model Performance</h2>
               <div className="grid grid-4">
                 <div className="stat-card" data-testid="total-requests-card">
                   <div className="stat-label">Total Requests</div>
@@ -94,7 +94,7 @@ const Observability = ({ user }) => {
 
             {/* Agent Activity Section */}
             <div className="mb-6">
-              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#0f172a', marginBottom: '16px' }}>Agent Activity</h2>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#f8fafc', marginBottom: '16px' }}>Agent Activity</h2>
               <div className="grid grid-3">
                 <div className="stat-card" data-testid="total-activities-card">
                   <div className="stat-label">Total Activities</div>
@@ -115,7 +115,7 @@ const Observability = ({ user }) => {
 
             {/* Knowledge Graph Section */}
             <div className="mb-6">
-              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#0f172a', marginBottom: '16px' }}>Knowledge Graph</h2>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#f8fafc', marginBottom: '16px' }}>Knowledge Graph</h2>
               <div className="grid grid-2">
                 <div className="stat-card" data-testid="total-entities-card">
                   <div className="stat-label">Total Entities</div>
@@ -173,7 +173,7 @@ const Observability = ({ user }) => {
                         key={idx}
                         style={{
                           padding: '12px',
-                          background: '#f8fafc',
+                          background: '#1e293b',
                           borderRadius: '6px',
                           borderLeft: `4px solid ${
                             activity.status === 'COMPLETED' ? '#10b981' :
@@ -183,7 +183,7 @@ const Observability = ({ user }) => {
                         }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                          <span style={{ fontSize: '13px', fontWeight: '600', color: '#0f172a' }}>
+                          <span style={{ fontSize: '13px', fontWeight: '600', color: '#f8fafc' }}>
                             {activity.agent_name}
                           </span>
                           <span
@@ -226,21 +226,21 @@ const Observability = ({ user }) => {
             <div className="card mt-6">
               <h3 className="card-title mb-4">System Health</h3>
               <div className="grid grid-3 gap-4">
-                <div style={{ padding: '16px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #86efac' }}>
+                <div style={{ padding: '16px', background: '#1e293b', borderRadius: '8px', border: '1px solid #86efac' }}>
                   <div style={{ fontSize: '13px', fontWeight: '600', color: '#166534', marginBottom: '8px' }}>Model Performance</div>
                   <div style={{ fontSize: '24px', fontWeight: '700', color: '#15803d' }}>Healthy</div>
                   <div style={{ fontSize: '12px', color: '#15803d', marginTop: '4px' }}>
                     {dashboard.model_performance.success_rate}% success rate
                   </div>
                 </div>
-                <div style={{ padding: '16px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #86efac' }}>
+                <div style={{ padding: '16px', background: '#1e293b', borderRadius: '8px', border: '1px solid #86efac' }}>
                   <div style={{ fontSize: '13px', fontWeight: '600', color: '#166534', marginBottom: '8px' }}>Agent Operations</div>
                   <div style={{ fontSize: '24px', fontWeight: '700', color: '#15803d' }}>Healthy</div>
                   <div style={{ fontSize: '12px', color: '#15803d', marginTop: '4px' }}>
                     {dashboard.agent_activity.success_rate}% success rate
                   </div>
                 </div>
-                <div style={{ padding: '16px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #86efac' }}>
+                <div style={{ padding: '16px', background: '#1e293b', borderRadius: '8px', border: '1px solid #86efac' }}>
                   <div style={{ fontSize: '13px', fontWeight: '600', color: '#166534', marginBottom: '8px' }}>Knowledge Graph</div>
                   <div style={{ fontSize: '24px', fontWeight: '700', color: '#15803d' }}>Growing</div>
                   <div style={{ fontSize: '12px', color: '#15803d', marginTop: '4px' }}>

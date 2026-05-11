@@ -162,7 +162,7 @@ const AICompliance = ({ user }) => {
   }
 
   return (
-    <div data-testid="ai-compliance-page">
+    <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="ai-compliance-page">
       <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
       <div className="page-header">
         <div>

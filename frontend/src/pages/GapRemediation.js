@@ -117,7 +117,7 @@ const GapRemediation = ({ user }) => {
   }
 
   return (
-    <div data-testid="gap-remediation-page">
+    <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="gap-remediation-page">
       <div className="page-header">
         <div>
           <h1 className="page-title" data-testid="gap-remediation-title">Gap Remediation</h1>
@@ -259,7 +259,7 @@ const GapRemediation = ({ user }) => {
               <div key={rem.id} className="card" style={{ padding: '20px' }}>
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', marginBottom: '4px' }}>
+                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f8fafc', marginBottom: '4px' }}>
                       {rem.remediation_id}
                     </h3>
                     <div className="flex gap-2 items-center">
@@ -301,7 +301,7 @@ const GapRemediation = ({ user }) => {
                 <div className="mb-4">
                   <div className="flex justify-between items-center mb-2">
                     <span style={{ fontSize: '12px', color: '#64748b' }}>Progress</span>
-                    <span style={{ fontSize: '12px', fontWeight: '600', color: '#0f172a' }}>{rem.progress_percentage}%</span>
+                    <span style={{ fontSize: '12px', fontWeight: '600', color: '#f8fafc' }}>{rem.progress_percentage}%</span>
                   </div>
                   <div style={{ 
                     width: '100%', 
@@ -399,7 +399,7 @@ const GapRemediation = ({ user }) => {
             </div>
             <div className="modal-body">
               {/* Gap Info */}
-              <div style={{ padding: '16px', background: '#fef2f2', borderRadius: '8px', marginBottom: '20px' }}>
+              <div style={{ padding: '16px', background: '#1e293b', borderRadius: '8px', marginBottom: '20px' }}>
                 <div className="flex justify-between items-start mb-2">
                   <span className="badge" style={{ background: '#eff6ff', color: '#1e40af' }}>{selectedGap.framework}</span>
                   <span style={{ color: getSeverityColor(selectedGap.severity), fontWeight: '600' }}>{selectedGap.severity}</span>
@@ -421,17 +421,17 @@ const GapRemediation = ({ user }) => {
                 <>
                   {/* Recommended Controls */}
                   <div className="mb-6">
-                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', marginBottom: '16px' }}>
+                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f8fafc', marginBottom: '16px' }}>
                       Recommended Controls
                     </h3>
                     <div className="space-y-3">
                       {recommendations.recommended_controls?.map((ctrl, idx) => (
                         <div 
                           key={idx}
-                          style={{ padding: '16px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                          style={{ padding: '16px', background: '#1e293b', borderRadius: '8px', border: '1px solid #e2e8f0' }}
                         >
                           <div className="flex justify-between items-start mb-2">
-                            <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#0f172a' }}>{ctrl.name}</h4>
+                            <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#f8fafc' }}>{ctrl.name}</h4>
                             <div className="flex gap-2">
                               <span className="badge" style={{ background: '#fef3c7', color: '#92400e' }}>
                                 {ctrl.implementation_effort} Effort
@@ -468,12 +468,12 @@ const GapRemediation = ({ user }) => {
                   {/* Implementation Plan */}
                   {recommendations.implementation_plan && (
                     <div className="mb-6">
-                      <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', marginBottom: '12px' }}>
+                      <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f8fafc', marginBottom: '12px' }}>
                         Implementation Plan
                       </h3>
                       <div style={{ 
                         padding: '16px', 
-                        background: '#f8fafc', 
+                        background: '#1e293b', 
                         borderRadius: '8px',
                         whiteSpace: 'pre-wrap',
                         fontSize: '13px',
@@ -487,7 +487,7 @@ const GapRemediation = ({ user }) => {
 
                   {/* Risk & Timeline */}
                   <div className="grid grid-2 gap-4 mb-6">
-                    <div style={{ padding: '16px', background: '#fef2f2', borderRadius: '8px' }}>
+                    <div style={{ padding: '16px', background: '#1e293b', borderRadius: '8px' }}>
                       <h4 style={{ fontSize: '13px', fontWeight: '600', color: '#991b1b', marginBottom: '8px' }}>
                         Risk if Delayed
                       </h4>
@@ -495,7 +495,7 @@ const GapRemediation = ({ user }) => {
                         {recommendations.risk_if_delayed}
                       </p>
                     </div>
-                    <div style={{ padding: '16px', background: '#f0fdf4', borderRadius: '8px' }}>
+                    <div style={{ padding: '16px', background: '#1e293b', borderRadius: '8px' }}>
                       <h4 style={{ fontSize: '13px', fontWeight: '600', color: '#166534', marginBottom: '8px' }}>
                         Estimated Timeline
                       </h4>
@@ -511,7 +511,7 @@ const GapRemediation = ({ user }) => {
                   {/* Compensating Controls */}
                   {recommendations.compensating_controls?.length > 0 && (
                     <div className="mb-6">
-                      <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', marginBottom: '12px' }}>
+                      <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f8fafc', marginBottom: '12px' }}>
                         Alternative Compensating Controls
                       </h3>
                       <ul style={{ paddingLeft: '20px', color: '#334155', fontSize: '13px' }}>

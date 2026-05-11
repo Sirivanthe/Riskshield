@@ -191,11 +191,11 @@ const IssueManagement = ({ user }) => {
   };
 
   if (loading) {
-    return <div className="p-6 bg-slate-900 min-h-screen text-white">Loading...</div>;
+    return <div className="p-6 min-h-screen text-white" style={{ background: '#0f172a' }}>Loading...</div>;
   }
 
   return (
-    <div className="p-6 bg-slate-900 min-h-screen" data-testid="issue-management-page">
+    <div className="p-6 min-h-screen" style={{ background: '#0f172a' }} data-testid="issue-management-page">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex justify-between items-center">
           <div>

@@ -198,7 +198,7 @@ const ControlsLibrary = ({ user }) => {
   }
 
   return (
-    <div data-testid="controls-library-page">
+    <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="controls-library-page">
       <div className="page-header">
         <div>
           <h1 className="page-title" data-testid="controls-library-title">Controls Library</h1>
@@ -240,7 +240,7 @@ const ControlsLibrary = ({ user }) => {
                 data-testid={`quality-${m.label.toLowerCase().replace(/[^a-z]+/g, '-')}`}
                 style={{
                   padding: '14px',
-                  background: '#fff',
+                  background: '#1e293b',
                   borderRadius: '10px',
                   border: '1px solid #e2e8f0',
                   borderLeft: `4px solid ${m.color}`,
@@ -249,7 +249,7 @@ const ControlsLibrary = ({ user }) => {
                 <div style={{ fontSize: '11px', color: '#64748b', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                   {m.label}
                 </div>
-                <div style={{ fontSize: '22px', fontWeight: 700, color: '#0f172a' }}>{m.value}</div>
+                <div style={{ fontSize: '22px', fontWeight: 700, color: '#f8fafc' }}>{m.value}</div>
               </div>
             ))}
           </div>
@@ -352,7 +352,7 @@ const ControlsLibrary = ({ user }) => {
                 )}
                 <div className="flex justify-between items-start mb-3" style={{ paddingRight: canReview ? '28px' : 0 }}>
                   <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', marginBottom: '4px' }}>
+                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f8fafc', marginBottom: '4px' }}>
                       {control.name}
                     </h3>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>{control.control_id}</span>
@@ -378,7 +378,7 @@ const ControlsLibrary = ({ user }) => {
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="badge" style={{ background: '#f1f5f9', color: '#475569' }}>
+                  <span className="badge" style={{ background: '#1e293b', color: '#475569' }}>
                     {control.category}
                   </span>
                   <span className="badge" style={{ background: '#fef3c7', color: '#92400e' }}>
@@ -427,7 +427,7 @@ const ControlsLibrary = ({ user }) => {
                     className="mb-3 flex items-center gap-2"
                     data-testid={`control-source-${control.id}`}
                   >
-                    <span style={{ fontSize: '11px', padding: '2px 8px', background: '#fef2f2', color: '#991b1b', borderRadius: '4px', border: '1px solid #fecaca' }}>
+                    <span style={{ fontSize: '11px', padding: '2px 8px', background: '#1e293b', color: '#991b1b', borderRadius: '4px', border: '1px solid #fecaca' }}>
                       From regulatory gap{control.source_file ? ` · ${control.source_file}` : ''}
                     </span>
                     {control.source_file && (
@@ -444,7 +444,7 @@ const ControlsLibrary = ({ user }) => {
 
                 {control.ai_risk_category && (
                   <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '12px' }}>
-                    AI Risk Category: <strong style={{ color: control.ai_risk_category === 'HIGH' ? '#dc2626' : '#0f172a' }}>{control.ai_risk_category}</strong>
+                    AI Risk Category: <strong style={{ color: control.ai_risk_category === 'HIGH' ? '#dc2626' : '#f8fafc' }}>{control.ai_risk_category}</strong>
                   </div>
                 )}
 
@@ -492,7 +492,7 @@ const ControlsLibrary = ({ user }) => {
               {/* Status Row */}
               <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
                 <span className="badge" style={{ background: `${getStatusColor(selectedControl.status)}20`, color: getStatusColor(selectedControl.status) }}>{selectedControl.status}</span>
-                <span className="badge" style={{ background: '#f1f5f9', color: '#475569' }}>{selectedControl.category}</span>
+                <span className="badge" style={{ background: '#1e293b', color: '#475569' }}>{selectedControl.category}</span>
                 <span className="badge" style={{ background: '#fef3c7', color: '#92400e' }}>{selectedControl.frequency}</span>
                 <span className="badge" style={{ background: `${getEffectivenessColor(selectedControl.effectiveness)}20`, color: getEffectivenessColor(selectedControl.effectiveness) }}>{selectedControl.effectiveness}</span>
                 {selectedControl.is_ai_control && <span className="badge" style={{ background: '#dbeafe', color: '#1e40af' }}>AI</span>}
@@ -501,7 +501,7 @@ const ControlsLibrary = ({ user }) => {
               {/* Description */}
               <div style={{ marginBottom: '20px' }}>
                 <h4 style={{ fontSize: '13px', fontWeight: '600', color: '#475569', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Description</h4>
-                <p style={{ fontSize: '14px', color: '#0f172a', lineHeight: '1.6' }}>{selectedControl.description}</p>
+                <p style={{ fontSize: '14px', color: '#f8fafc', lineHeight: '1.6' }}>{selectedControl.description}</p>
               </div>
 
               {/* Frameworks */}
@@ -532,7 +532,7 @@ const ControlsLibrary = ({ user }) => {
               {selectedControl.implementation_guidance && (
                 <div style={{ marginBottom: '16px' }}>
                   <h4 style={{ fontSize: '13px', fontWeight: '600', color: '#475569', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Implementation Guidance</h4>
-                  <p style={{ fontSize: '13px', color: '#475569', lineHeight: '1.6', background: '#f8fafc', padding: '12px', borderRadius: '8px' }}>{selectedControl.implementation_guidance}</p>
+                  <p style={{ fontSize: '13px', color: '#475569', lineHeight: '1.6', background: '#1e293b', padding: '12px', borderRadius: '8px' }}>{selectedControl.implementation_guidance}</p>
                 </div>
               )}
 
@@ -540,7 +540,7 @@ const ControlsLibrary = ({ user }) => {
               {selectedControl.testing_procedure && (
                 <div style={{ marginBottom: '16px' }}>
                   <h4 style={{ fontSize: '13px', fontWeight: '600', color: '#475569', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Testing Procedure</h4>
-                  <p style={{ fontSize: '13px', color: '#475569', lineHeight: '1.6', background: '#f8fafc', padding: '12px', borderRadius: '8px' }}>{selectedControl.testing_procedure}</p>
+                  <p style={{ fontSize: '13px', color: '#475569', lineHeight: '1.6', background: '#1e293b', padding: '12px', borderRadius: '8px' }}>{selectedControl.testing_procedure}</p>
                 </div>
               )}
 
@@ -560,7 +560,7 @@ const ControlsLibrary = ({ user }) => {
               {selectedControl.is_ai_control && selectedControl.ai_risk_category && (
                 <div style={{ padding: '12px', background: '#eff6ff', borderRadius: '8px', marginBottom: '16px' }}>
                   <h4 style={{ fontSize: '13px', fontWeight: '600', color: '#1e40af', marginBottom: '4px' }}>EU AI Act Risk Category</h4>
-                  <span style={{ fontSize: '14px', fontWeight: '700', color: selectedControl.ai_risk_category === 'HIGH' ? '#dc2626' : '#0f172a' }}>{selectedControl.ai_risk_category}</span>
+                  <span style={{ fontSize: '14px', fontWeight: '700', color: selectedControl.ai_risk_category === 'HIGH' ? '#dc2626' : '#f8fafc' }}>{selectedControl.ai_risk_category}</span>
                 </div>
               )}
             </div>
@@ -623,12 +623,12 @@ const ControlsLibrary = ({ user }) => {
                         <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Result</div>
                         <div style={{ fontWeight: '800', fontSize: '16px', color: resultColor }}>{resultLabel}</div>
                       </div>
-                      <div style={{ flex: 1, padding: '14px', background: '#f8fafc', borderRadius: '8px', textAlign: 'center', border: '1px solid #e2e8f0' }}>
+                      <div style={{ flex: 1, padding: '14px', background: '#1e293b', borderRadius: '8px', textAlign: 'center', border: '1px solid #e2e8f0' }}>
                         <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Confidence</div>
-                        <div style={{ fontWeight: '700', fontSize: '16px', color: '#0f172a' }}>{confidence != null ? `${(confidence * 100).toFixed(0)}%` : '-'}</div>
+                        <div style={{ fontWeight: '700', fontSize: '16px', color: '#f8fafc' }}>{confidence != null ? `${(confidence * 100).toFixed(0)}%` : '-'}</div>
                         <div style={{ fontSize: '10px', color: '#94a3b8' }}>certainty in judgment</div>
                       </div>
-                      <div style={{ flex: 1, padding: '14px', background: '#f8fafc', borderRadius: '8px', textAlign: 'center', border: '1px solid #e2e8f0' }}>
+                      <div style={{ flex: 1, padding: '14px', background: '#1e293b', borderRadius: '8px', textAlign: 'center', border: '1px solid #e2e8f0' }}>
                         <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Effectiveness</div>
                         <div style={{ fontWeight: '700', fontSize: '11px', color: getEffectivenessColor(rating) }}>
                           {rating?.replace(/_/g, ' ') || '-'}
@@ -660,7 +660,7 @@ const ControlsLibrary = ({ user }) => {
                         </h4>
                         <ul style={{ margin: 0, paddingLeft: '0', listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                           {recsList.map((r, i) => (
-                            <li key={i} style={{ fontSize: '13px', color: '#475569', background: '#f0fdf4', padding: '8px 12px', borderRadius: '6px', borderLeft: '3px solid #22c55e', lineHeight: '1.5' }}>
+                            <li key={i} style={{ fontSize: '13px', color: '#475569', background: '#1e293b', padding: '8px 12px', borderRadius: '6px', borderLeft: '3px solid #22c55e', lineHeight: '1.5' }}>
                               {r}
                             </li>
                           ))}
@@ -674,7 +674,7 @@ const ControlsLibrary = ({ user }) => {
                         <h4 style={{ fontSize: '13px', fontWeight: '600', color: '#475569', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                           Full Audit Report
                         </h4>
-                        <div style={{ fontSize: '12px', color: '#475569', background: '#f8fafc', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0', whiteSpace: 'pre-wrap', lineHeight: '1.7', maxHeight: '200px', overflowY: 'auto' }}>
+                        <div style={{ fontSize: '12px', color: '#475569', background: '#1e293b', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0', whiteSpace: 'pre-wrap', lineHeight: '1.7', maxHeight: '200px', overflowY: 'auto' }}>
                           {testResult.report}
                         </div>
                       </div>
@@ -682,7 +682,7 @@ const ControlsLibrary = ({ user }) => {
 
                     {/* Human review notice */}
                     {testResult.requires_human_review && (
-                      <div style={{ marginTop: '16px', padding: '10px 14px', background: '#fef3c7', borderRadius: '8px', border: '1px solid #fcd34d', fontSize: '12px', color: '#92400e' }}>
+                      <div style={{ marginTop: '16px', padding: '10px 14px', background: '#1e293b', borderRadius: '8px', border: '1px solid #fcd34d', fontSize: '12px', color: '#92400e' }}>
                         ⚠️ This result requires human review before being finalized.
                       </div>
                     )}
@@ -691,7 +691,7 @@ const ControlsLibrary = ({ user }) => {
               })()}
 
               {testResult?.error && (
-                <div style={{ padding: '14px', background: '#fef2f2', borderRadius: '8px', color: '#991b1b', fontSize: '13px' }}>
+                <div style={{ padding: '14px', background: '#1e293b', borderRadius: '8px', color: '#991b1b', fontSize: '13px' }}>
                   {testResult.error}
                 </div>
               )}

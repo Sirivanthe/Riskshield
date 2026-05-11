@@ -254,14 +254,14 @@ const TrendAnalytics = ({ user }) => {
 
   if (loading && !dashboardData) {
     return (
-      <div className="p-6 bg-slate-900 min-h-screen text-white">
+      <div className="p-6 min-h-screen text-white" style={{ background: '#0f172a' }}>
         <div className="animate-pulse">Loading trend analytics...</div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-slate-900 min-h-screen" data-testid="trend-analytics-page">
+    <div className="p-6 min-h-screen" style={{ background: '#0f172a' }} data-testid="trend-analytics-page">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">

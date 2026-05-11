@@ -32,7 +32,7 @@ const Workflows = ({ user }) => {
   }
 
   return (
-    <div data-testid="workflows-page">
+    <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="workflows-page">
       <div className="page-header">
         <div className="flex justify-between items-center">
           <div>
@@ -73,7 +73,7 @@ const Workflows = ({ user }) => {
                 {workflows.map((workflow) => (
                   <tr key={workflow.id} data-testid={`workflow-row-${workflow.id}`}>
                     <td>
-                      <div style={{ fontWeight: '600', color: '#0f172a' }}>{workflow.name}</div>
+                      <div style={{ fontWeight: '600', color: '#f8fafc' }}>{workflow.name}</div>
                     </td>
                     <td style={{ fontSize: '14px', color: '#64748b', maxWidth: '300px' }}>{workflow.description}</td>
                     <td>
@@ -113,7 +113,7 @@ const Workflows = ({ user }) => {
         {/* Workflow Info */}
         <div className="grid grid-3 gap-4 mt-6">
           <div className="card">
-            <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', marginBottom: '12px' }}>Available Triggers</h3>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f8fafc', marginBottom: '12px' }}>Available Triggers</h3>
             <ul style={{ fontSize: '14px', color: '#64748b', paddingLeft: '20px' }}>
               <li className="mb-2">ON_HIGH_RISK: Triggered when critical/high risks detected</li>
               <li className="mb-2">ON_FAILED_CONTROL: Triggered when controls are ineffective</li>
@@ -123,7 +123,7 @@ const Workflows = ({ user }) => {
           </div>
 
           <div className="card">
-            <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', marginBottom: '12px' }}>Workflow Actions</h3>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f8fafc', marginBottom: '12px' }}>Workflow Actions</h3>
             <ul style={{ fontSize: '14px', color: '#64748b', paddingLeft: '20px' }}>
               <li className="mb-2">CREATE_GRC_TICKET: Create tickets in ServiceNow/Archer</li>
               <li className="mb-2">SEND_EMAIL: Send notification emails</li>
@@ -132,7 +132,7 @@ const Workflows = ({ user }) => {
           </div>
 
           <div className="card">
-            <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', marginBottom: '12px' }}>GRC Integrations</h3>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f8fafc', marginBottom: '12px' }}>GRC Integrations</h3>
             <ul style={{ fontSize: '14px', color: '#64748b', paddingLeft: '20px' }}>
               <li className="mb-2">ServiceNow: Issue tracking</li>
               <li className="mb-2">Archer: Risk management</li>
@@ -160,7 +160,7 @@ const Workflows = ({ user }) => {
         >
           <div
             style={{
-              background: 'white',
+              background: '#1e293b',
               borderRadius: '16px',
               padding: '32px',
               maxWidth: '500px',

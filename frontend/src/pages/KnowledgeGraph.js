@@ -79,7 +79,7 @@ const KnowledgeGraph = ({ user }) => {
   }
 
   return (
-    <div data-testid="knowledge-graph-page">
+    <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="knowledge-graph-page">
       <div className="page-header">
         <h1 className="page-title" data-testid="kg-title">Organizational Knowledge Graph</h1>
         <p className="page-subtitle">AI-powered contextual understanding of your organization</p>
@@ -163,7 +163,7 @@ const KnowledgeGraph = ({ user }) => {
                       onClick={() => setSelectedEntity(entity)}
                       style={{
                         padding: '12px',
-                        background: selectedEntity?.id === entity.id ? '#eff6ff' : '#f8fafc',
+                        background: selectedEntity?.id === entity.id ? '#1e293b' : '#1e293b',
                         borderLeft: `4px solid ${getEntityColor(entity.entity_type)}`,
                         borderRadius: '6px',
                         cursor: 'pointer',
@@ -173,7 +173,7 @@ const KnowledgeGraph = ({ user }) => {
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div style={{ fontSize: '14px', fontWeight: '600', color: '#0f172a', marginBottom: '4px' }}>
+                          <div style={{ fontSize: '14px', fontWeight: '600', color: '#f8fafc', marginBottom: '4px' }}>
                             {entity.name}
                           </div>
                           <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>
@@ -228,7 +228,7 @@ const KnowledgeGraph = ({ user }) => {
                         key={relation.id}
                         style={{
                           padding: '12px',
-                          background: '#f8fafc',
+                          background: '#1e293b',
                           borderRadius: '6px'
                         }}
                         data-testid={`relation-${relation.id}`}
@@ -237,7 +237,7 @@ const KnowledgeGraph = ({ user }) => {
                           <span
                             style={{
                               padding: '4px 8px',
-                              background: sourceEntity ? getEntityColor(sourceEntity.entity_type) + '20' : '#f1f5f9',
+                              background: sourceEntity ? getEntityColor(sourceEntity.entity_type) + '20' : '#1e293b',
                               color: sourceEntity ? getEntityColor(sourceEntity.entity_type) : '#64748b',
                               borderRadius: '4px',
                               fontWeight: '600'
@@ -263,7 +263,7 @@ const KnowledgeGraph = ({ user }) => {
                           <span
                             style={{
                               padding: '4px 8px',
-                              background: targetEntity ? getEntityColor(targetEntity.entity_type) + '20' : '#f1f5f9',
+                              background: targetEntity ? getEntityColor(targetEntity.entity_type) + '20' : '#1e293b',
                               color: targetEntity ? getEntityColor(targetEntity.entity_type) : '#64748b',
                               borderRadius: '4px',
                               fontWeight: '600'
@@ -322,11 +322,11 @@ const KnowledgeGraph = ({ user }) => {
                 <div style={{ fontSize: '13px', fontWeight: '600', color: '#475569', marginBottom: '8px' }}>Properties</div>
                 <div className="grid grid-2 gap-3">
                   {Object.entries(selectedEntity.properties).map(([key, value]) => (
-                    <div key={key} style={{ padding: '12px', background: '#f8fafc', borderRadius: '6px' }}>
+                    <div key={key} style={{ padding: '12px', background: '#1e293b', borderRadius: '6px' }}>
                       <div style={{ fontSize: '11px', fontWeight: '600', color: '#64748b', marginBottom: '4px' }}>
                         {key.replace('_', ' ').toUpperCase()}
                       </div>
-                      <div style={{ fontSize: '13px', color: '#0f172a' }}>
+                      <div style={{ fontSize: '13px', color: '#f8fafc' }}>
                         {Array.isArray(value) ? value.join(', ') : JSON.stringify(value)}
                       </div>
                     </div>

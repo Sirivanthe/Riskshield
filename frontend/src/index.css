@@ -82,13 +82,113 @@ code {
     }
 }
 
-/* ── Force white backgrounds and dark text on all Tailwind dark classes ── */
-.bg-gray-50, .bg-gray-50 { background-color: #f8fafc !important; }
-.bg-white, .bg-white { background-color: #ffffff !important; }
-.bg-gray-100, .bg-gray-100 { background-color: #f1f5f9 !important; }
-.bg-gray-200, .bg-gray-600 { background-color: #e2e8f0 !important; }
-[class*="bg-gray-50\/"], [class*="bg-white\/"], [class*="bg-gray-100\/"] { background-color: #ffffff !important; }
-.text-white    { color: #0f172a !important; }
+/* ── Force #0f172a background on all landing pages and main containers ── */
+body, .min-h-screen, .layout, .main-content, .App { background-color: #0f172a !important; }
+
+/* Override any conflicting background classes */
+.bg-gray-50, .bg-gray-100, .bg-gray-200, .bg-white { background-color: #0f172a !important; }
+[class*="bg-gray-50\/"], [class*="bg-white\/"], [class*="bg-gray-100\/"] { background-color: #0f172a !important; }
+
+/* Set card backgrounds to #1e293b for better contrast */
+.card, .modal, .modal-body, .stat-card, .bg-slate-800, .bg-slate-800\/50 { 
+  background-color: #1e293b !important; 
+}
+
+/* Ensure proper text contrast */
+.page-title, h1, h2, h3, h4, h5, h6 { 
+  color: #f8fafc !important; 
+}
+
+.text-white, .page-subtitle, .stat-label, .stat-value {
+  color: #e2e8f0 !important;
+}
+
+.text-gray, .text-slate-400, .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+.text-slate-200, .text-slate-300 {
+  color: #e2e8f0 !important;
+}
+
+.text-slate-600, .text-slate-700 {
+  color: #64748b !important;
+}
+
+/* Allow specific component backgrounds to remain as designed */
+.form-input, .form-select, .form-textarea, .badge, .sidebar { 
+  background-color: #1e293b !important; 
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+}
+
+/* Higher specificity rules to override conflicting styles */
+input.form-input, select.form-select, textarea.form-textarea {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+input:not(.sidebar *):not(.btn), select:not(.sidebar *):not(.btn), textarea:not(.sidebar *):not(.btn) {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+/* Override Card component styling with higher specificity */
+div[class*="bg-card"], div.bg-card, .card, div[class*="rounded-xl"][class*="border"] {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+div[class*="text-card-foreground"], div.text-card-foreground {
+  color: #f8fafc !important;
+}
+
+/* Button variants with proper contrast */
+.btn {
+  background-color: #1e293b !important; 
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+}
+
+.btn-primary {
+  background-color: #3b82f6 !important; 
+  color: #ffffff !important;
+  border: 1px solid #2563eb !important;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb !important; 
+  border-color: #1d4ed8 !important;
+}
+
+.btn-outline {
+  background-color: transparent !important; 
+  color: #e2e8f0 !important;
+  border: 1px solid #475569 !important;
+}
+
+.btn-outline:hover {
+  background-color: #334155 !important; 
+  color: #f8fafc !important;
+  border-color: #64748b !important;
+}
+
+/* Form element focus states */
+.form-input:focus, .form-select:focus, .form-textarea:focus, input:focus, select:focus, textarea:focus,
+input.form-input:focus, select.form-select:focus, textarea.form-textarea:focus,
+input:not(.sidebar *):not(.btn):focus, select:not(.sidebar *):not(.btn):focus, textarea:not(.sidebar *):not(.btn):focus {
+  outline: none !important;
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* Placeholder text */
+.form-input::placeholder, .form-textarea::placeholder, input::placeholder, textarea::placeholder {
+  color: #94a3b8 !important;
+}
+.text-white    { color: #f8fafc !important; }
 .text-gray-900, .text-gray-800 { color: #0f172a !important; }
 .text-gray-700 { color: #334155 !important; }
 .text-gray-500 { color: #64748b !important; }
@@ -99,3 +199,26 @@ code {
 .border-gray-200, .border-gray-300 { border-color: #e2e8f0 !important; }
 .hover\:bg-gray-100:hover, .hover\:bg-gray-200:hover { background-color: #eff6ff !important; }
 h1, h2 { color: #003087 !important; }
+
+
+/* ── Force dark theme ── */
+:root {
+  --background: 222 47% 11%;
+  --foreground: 213 31% 91%;
+  --card: 222 47% 15%;
+  --card-foreground: 213 31% 91%;
+  --popover: 222 47% 15%;
+  --popover-foreground: 213 31% 91%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 222 47% 11%;
+  --secondary: 222 47% 20%;
+  --secondary-foreground: 213 31% 91%;
+  --muted: 222 47% 18%;
+  --muted-foreground: 215 16% 57%;
+  --accent: 222 47% 20%;
+  --accent-foreground: 213 31% 91%;
+  --border: 222 47% 22%;
+  --input: 222 47% 18%;
+  --ring: 217 91% 60%;
+}
+body { background: #0f172a; color: #e2e8f0; }

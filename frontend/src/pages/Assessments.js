@@ -54,7 +54,7 @@ const Assessments = ({ user }) => {
   }
 
   return (
-    <div data-testid="assessments-page">
+    <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="assessments-page">
       <div className="page-header">
         <div className="flex justify-between items-center">
           <div>
@@ -134,7 +134,7 @@ const Assessments = ({ user }) => {
                 {filteredAssessments.map((assessment) => (
                   <tr key={assessment.id} data-testid={`assessment-row-${assessment.id}`}>
                     <td>
-                      <div style={{ fontWeight: '600', color: '#0f172a' }}>{assessment.name}</div>
+                      <div style={{ fontWeight: '600', color: '#f8fafc' }}>{assessment.name}</div>
                     </td>
                     <td>{assessment.system_name}</td>
                     <td>{assessment.business_unit}</td>
@@ -186,8 +186,7 @@ const Assessments = ({ user }) => {
         ) : (
           <div className="card">
             <div className="empty-state">
-              <div className="empty-icon">📊</div>
-              <h3 className="empty-title">No assessments found</h3>
+                            <h3 className="empty-title">No assessments found</h3>
               <p className="empty-description">
                 {filter === 'all'
                   ? 'Create your first assessment to get started'

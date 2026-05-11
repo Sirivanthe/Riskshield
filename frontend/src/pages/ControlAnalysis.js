@@ -461,7 +461,7 @@ const ControlAnalysis = () => {
   }, [overallVerdict]);
 
   return (
-    <div className="p-6 bg-slate-900 min-h-screen" data-testid="control-analysis-page">
+    <div className="p-6 min-h-screen" style={{ background: '#0f172a' }} data-testid="control-analysis-page">
       <div className="max-w-7xl mx-auto space-y-6">
 
         {/* Header */}
@@ -471,7 +471,7 @@ const ControlAnalysis = () => {
             <p className="text-slate-400">Ingest, analyze and evaluate controls. Upload registers, validate evidence with AI and export audit workpapers.</p>
           </div>
           <div className="flex gap-2">
-            <Button onClick={() => downloadWorkpaper('pdf')} className="bg-slate-700 hover:bg-slate-600 text-white">Export PDF</Button>
+            <Button onClick={() => downloadWorkpaper('pdf')} className="bg-slate-700 hover:bg-slate-600">Export PDF</Button>
             <Button onClick={() => downloadWorkpaper('excel')}>Export Excel</Button>
           </div>
         </div>

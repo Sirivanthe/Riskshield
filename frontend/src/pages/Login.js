@@ -40,7 +40,7 @@ const Login = ({ onLogin }) => {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' }}>
               <span className="text-2xl font-bold text-white">RS</span>
             </div>
-            <h1 className="text-3xl font-bold" style={{ color: '#0f172a', marginBottom: '8px' }}>RiskShield Platform</h1>
+            <h1 className="text-3xl font-bold" style={{ color: '#f8fafc', marginBottom: '8px' }}>RiskShield Platform</h1>
             <p style={{ color: '#64748b', fontSize: '14px' }}>Multi-Agent Tech Risk & Control Assurance</p>
           </div>
 

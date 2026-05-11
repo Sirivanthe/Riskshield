@@ -92,7 +92,7 @@ const NewAssessmentModal = ({ onClose, onSuccess }) => {
     >
       <div
         style={{
-          background: 'white',
+          background: '#1e293b',
           borderRadius: '16px',
           maxWidth: '600px',
           width: '100%',
@@ -219,14 +219,14 @@ const NewAssessmentModal = ({ onClose, onSuccess }) => {
                       padding: '16px',
                       borderRadius: '8px',
                       border: formData.frameworks.includes(framework) ? '2px solid #3b82f6' : '2px solid #e2e8f0',
-                      background: formData.frameworks.includes(framework) ? '#eff6ff' : 'white',
+                      background: formData.frameworks.includes(framework) ? '#1e293b' : '#1e293b',
                       cursor: 'pointer',
                       transition: 'all 0.2s'
                     }}
                     data-testid={`framework-${framework.replace(/\s+/g, '-').toLowerCase()}`}
                   >
                     <div className="flex items-center justify-between">
-                      <span style={{ fontWeight: '600', color: '#0f172a' }}>{framework}</span>
+                      <span style={{ fontWeight: '600', color: '#f8fafc' }}>{framework}</span>
                       {formData.frameworks.includes(framework) && (
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
                           <polyline points="20 6 9 17 4 12"></polyline>
@@ -253,14 +253,14 @@ const NewAssessmentModal = ({ onClose, onSuccess }) => {
                       padding: '16px',
                       borderRadius: '8px',
                       border: (formData.scenario === scenario.id || (!formData.scenario && scenario.id === 'none')) ? '2px solid #3b82f6' : '2px solid #e2e8f0',
-                      background: (formData.scenario === scenario.id || (!formData.scenario && scenario.id === 'none')) ? '#eff6ff' : 'white',
+                      background: (formData.scenario === scenario.id || (!formData.scenario && scenario.id === 'none')) ? '#1e293b' : '#1e293b',
                       cursor: 'pointer',
                       transition: 'all 0.2s'
                     }}
                     data-testid={`scenario-${scenario.id}`}
                   >
                     <div className="flex items-center justify-between">
-                      <span style={{ fontWeight: '500', color: '#0f172a' }}>{scenario.name}</span>
+                      <span style={{ fontWeight: '500', color: '#f8fafc' }}>{scenario.name}</span>
                       {(formData.scenario === scenario.id || (!formData.scenario && scenario.id === 'none')) && (
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
                           <polyline points="20 6 9 17 4 12"></polyline>

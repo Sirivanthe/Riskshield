@@ -85,7 +85,7 @@ const AutomatedTesting = ({ user }) => {
   }
 
   return (
-    <div data-testid="automated-testing-page">
+    <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="automated-testing-page">
       <div className="page-header">
         <div>
           <h1 className="page-title" data-testid="automated-testing-title">Automated Control Testing</h1>
@@ -260,7 +260,7 @@ const AutomatedTesting = ({ user }) => {
               <div key={control.id} className="card" style={{ padding: '20px' }}>
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0f172a', marginBottom: '4px' }}>
+                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f8fafc', marginBottom: '4px' }}>
                       {control.name}
                     </h3>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>{control.control_id}</span>
@@ -355,7 +355,7 @@ const AutomatedTesting = ({ user }) => {
                     key={type.id}
                     style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}
                   >
-                    <div style={{ fontWeight: '600', color: '#0f172a', marginBottom: '4px' }}>{type.name}</div>
+                    <div style={{ fontWeight: '600', color: '#f8fafc', marginBottom: '4px' }}>{type.name}</div>
                     <div style={{ fontSize: '13px', color: '#64748b' }}>{type.description}</div>
                   </div>
                 ))}
@@ -371,7 +371,7 @@ const AutomatedTesting = ({ user }) => {
                     style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}
                   >
                     <div className="flex justify-between items-start mb-1">
-                      <div style={{ fontWeight: '600', color: '#0f172a' }}>{source.name}</div>
+                      <div style={{ fontWeight: '600', color: '#f8fafc' }}>{source.name}</div>
                       <span className="badge" style={{ background: '#eff6ff', color: '#1e40af', fontSize: '11px' }}>
                         {source.type}
                       </span>
@@ -410,7 +410,7 @@ const AutomatedTesting = ({ user }) => {
                 </div>
                 <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '8px', textAlign: 'center' }}>
                   <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Test Type</div>
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: '#0f172a' }}>
+                  <div style={{ fontSize: '14px', fontWeight: '600', color: '#f8fafc' }}>
                     {selectedRun.test_type?.replace('_', ' ')}
                   </div>
                 </div>
@@ -418,7 +418,7 @@ const AutomatedTesting = ({ user }) => {
 
               {/* Findings */}
               <div className="mb-4">
-                <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#0f172a', marginBottom: '8px' }}>Key Findings</h4>
+                <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#f8fafc', marginBottom: '8px' }}>Key Findings</h4>
                 {selectedRun.findings?.length > 0 ? (
                   <ul style={{ paddingLeft: '20px', color: '#334155', fontSize: '13px' }}>
                     {selectedRun.findings.map((finding, idx) => (
@@ -432,7 +432,7 @@ const AutomatedTesting = ({ user }) => {
 
               {/* Recommendations */}
               <div className="mb-4">
-                <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#0f172a', marginBottom: '8px' }}>Recommendations</h4>
+                <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#f8fafc', marginBottom: '8px' }}>Recommendations</h4>
                 {selectedRun.recommendations?.length > 0 ? (
                   <ul style={{ paddingLeft: '20px', color: '#334155', fontSize: '13px' }}>
                     {selectedRun.recommendations.map((rec, idx) => (
@@ -446,7 +446,7 @@ const AutomatedTesting = ({ user }) => {
 
               {/* Evidence */}
               <div className="mb-4">
-                <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#0f172a', marginBottom: '8px' }}>Evidence Collected</h4>
+                <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#f8fafc', marginBottom: '8px' }}>Evidence Collected</h4>
                 <div className="space-y-2">
                   {selectedRun.evidence_collected?.map((ev, idx) => (
                     <div key={idx} style={{ padding: '12px', background: '#f0fdf4', borderRadius: '8px', fontSize: '13px' }}>
