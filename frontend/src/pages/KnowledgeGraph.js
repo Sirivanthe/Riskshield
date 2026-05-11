@@ -82,7 +82,6 @@ const KnowledgeGraph = ({ user }) => {
     <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="knowledge-graph-page">
       <div className="page-header">
         <h1 className="page-title" data-testid="kg-title">Organizational Knowledge Graph</h1>
-        <p className="page-subtitle">AI-powered contextual understanding of your organization</p>
       </div>
 
       <div className="page-content">
@@ -133,15 +132,15 @@ const KnowledgeGraph = ({ user }) => {
 
         {/* Stats */}
         <div className="grid grid-3 mb-6">
-          <div className="stat-card">
+          <div className="stat-card" style={{ border: '6px solid #0066ff !important' }}>
             <div className="stat-label">Total Entities</div>
             <div className="stat-value">{graphData.entities.length}</div>
           </div>
-          <div className="stat-card">
+          <div className="stat-card" style={{ border: '6px solid #00cc66 !important' }}>
             <div className="stat-label">Total Relations</div>
             <div className="stat-value">{graphData.relations.length}</div>
           </div>
-          <div className="stat-card">
+          <div className="stat-card" style={{ border: '6px solid #ff9900 !important' }}>
             <div className="stat-label">Knowledge Density</div>
             <div className="stat-value" style={{ fontSize: '28px' }}>
               {graphData.entities.length > 0 ? (graphData.relations.length / graphData.entities.length).toFixed(1) : 0}
@@ -152,7 +151,7 @@ const KnowledgeGraph = ({ user }) => {
         {/* Graph Visualization (Simplified List View) */}
         <div className="grid grid-2 gap-6">
           {/* Entities */}
-          <div className="card" data-testid="entities-card">
+          <div className="card" data-testid="entities-card" style={{ border: '6px solid #9933ff !important' }}>
             <h3 className="card-title mb-4">Entities ({graphData.entities.length})</h3>
             <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
               {graphData.entities.length > 0 ? (
@@ -214,7 +213,7 @@ const KnowledgeGraph = ({ user }) => {
           </div>
 
           {/* Relations */}
-          <div className="card" data-testid="relations-card">
+          <div className="card" data-testid="relations-card" style={{ border: '6px solid #ff3333 !important' }}>
             <h3 className="card-title mb-4">Relations ({graphData.relations.length})</h3>
             <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
               {graphData.relations.length > 0 ? (
@@ -348,7 +347,7 @@ const KnowledgeGraph = ({ user }) => {
         )}
 
         {/* Legend */}
-        <div className="card mt-6">
+        <div className="card mt-6" style={{ border: '6px solid #00cccc !important' }}>
           <h3 className="card-title mb-4">Entity Types Legend</h3>
           <div className="grid grid-4 gap-3">
             {['SYSTEM', 'RISK', 'CONTROL', 'REGULATION', 'BUSINESS_UNIT', 'VENDOR', 'ASSET'].map((type) => (
@@ -361,7 +360,7 @@ const KnowledgeGraph = ({ user }) => {
                     borderRadius: '4px'
                   }}
                 ></div>
-                <span style={{ fontSize: '13px', color: '#334155' }}>{type.replace('_', ' ')}</span>
+                <span style={{ fontSize: '13px', color: '#ffffff' }}>{type.replace('_', ' ')}</span>
               </div>
             ))}
           </div>

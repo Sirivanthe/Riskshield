@@ -289,16 +289,12 @@ const RegulatoryAnalysis = () => {
         {/* Header */}
         <div>
           <h1 className="text-2xl font-bold text-white">Regulatory Analysis</h1>
-          <p className="text-slate-400">
-            Upload a regulation, let the LLM extract and classify its requirements, map them against your control register
-            and close gaps by adding AI-drafted controls or raising issues — all in one place.
-          </p>
         </div>
 
         {/* Step 1 — Upload */}
         <Card className="bg-slate-800/50 border-slate-700">
           <CardHeader>
-            <CardTitle className="text-white text-base">1. Upload or Paste Regulation</CardTitle>
+            <CardTitle className="text-white text-base">Upload or Paste Regulation</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -310,18 +306,18 @@ const RegulatoryAnalysis = () => {
               />
               <input ref={fileInputRef} type="file" accept=".txt,.md,.csv,.pdf" className="hidden"
                 onChange={(e) => onPickFile(e.target.files?.[0])} />
-              <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
-                📄 Upload Document (.txt/.md/.pdf)
+              <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="bg-blue-500 hover:bg-blue-600 text-white border-blue-500">
+                Upload Document (.txt/.md/.pdf)
               </Button>
-              <Button onClick={analyze} disabled={loading}>
-                {loading ? '⏳ Analyzing via LLM...' : '🔍 Analyze & Map to Controls'}
+              <Button onClick={analyze} disabled={loading} className="bg-blue-500 hover:bg-blue-600 text-white">
+                {loading ? 'Analyzing via LLM...' : 'Analyze & Map to Controls'}
               </Button>
             </div>
             <textarea rows={8}
               placeholder="Paste regulation text here, or upload a document above."
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full bg-slate-700 border border-slate-600 text-white p-2 rounded text-sm" />
+              className="w-full bg-slate-700 border border-slate-600 text-white placeholder:text-white p-2 rounded text-sm" />
           </CardContent>
         </Card>
 

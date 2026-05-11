@@ -180,8 +180,6 @@ const AutomatedTesting = ({ user }) => {
 
           <h1 className="page-title" data-testid="automated-testing-title">Automated Control Testing</h1>
 
-          <p className="page-subtitle">AI-powered control testing with automated evidence collection</p>
-
         </div>
 
       </div>
@@ -708,13 +706,13 @@ const AutomatedTesting = ({ user }) => {
 
                     key={type.id}
 
-                    style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}
+                    style={{ padding: '12px', background: '#1e293b', borderRadius: '8px', border: '1px solid #3b82f6' }}
 
                   >
 
-                    <div style={{ fontWeight: '600', color: '#f8fafc', marginBottom: '4px' }}>{type.name}</div>
+                    <div style={{ fontWeight: '600', color: '#ffffff', marginBottom: '4px' }}>{type.name}</div>
 
-                    <div style={{ fontSize: '13px', color: '#64748b' }}>{type.description}</div>
+                    <div style={{ fontSize: '13px', color: '#94a3b8' }}>{type.description}</div>
 
                   </div>
 
@@ -738,15 +736,15 @@ const AutomatedTesting = ({ user }) => {
 
                     key={source.id}
 
-                    style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}
+                    style={{ padding: '12px', background: '#1e293b', borderRadius: '8px', border: '1px solid #10b981' }}
 
                   >
 
                     <div className="flex justify-between items-start mb-1">
 
-                      <div style={{ fontWeight: '600', color: '#f8fafc' }}>{source.name}</div>
+                      <div style={{ fontWeight: '600', color: '#ffffff' }}>{source.name}</div>
 
-                      <span className="badge" style={{ background: '#eff6ff', color: '#1e40af', fontSize: '11px' }}>
+                      <span className="badge" style={{ background: '#1e40af', color: '#ffffff', fontSize: '11px', border: '1px solid #3b82f6' }}>
 
                         {source.type}
 
@@ -754,7 +752,7 @@ const AutomatedTesting = ({ user }) => {
 
                     </div>
 
-                    <div style={{ fontSize: '13px', color: '#64748b' }}>{source.description}</div>
+                    <div style={{ fontSize: '13px', color: '#94a3b8' }}>{source.description}</div>
 
                   </div>
 

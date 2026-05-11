@@ -33,20 +33,17 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%)' }}>
+    <div className="min-h-screen flex" style={{ background: '#0f172a' }}>
       <div className="flex-1 flex items-center justify-center p-8">
-        <div className="max-w-md w-full" style={{ background: 'rgba(255, 255, 255, 0.98)', borderRadius: '16px', padding: '48px', boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)' }}>
+        <div className="max-w-md w-full" style={{ background: '#1e293b', borderRadius: '16px', padding: '48px', boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)', border: '1px solid #334155' }}>
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' }}>
-              <span className="text-2xl font-bold text-white">RS</span>
-            </div>
-            <h1 className="text-3xl font-bold" style={{ color: '#f8fafc', marginBottom: '8px' }}>RiskShield Platform</h1>
-            <p style={{ color: '#64748b', fontSize: '14px' }}>Multi-Agent Tech Risk & Control Assurance</p>
+            <h1 className="text-3xl font-bold" style={{ color: '#ffffff', marginBottom: '8px' }}>KPMG RISK SHIELD PLATFORM</h1>
+            <p style={{ color: '#94a3b8', fontSize: '14px' }}>Multi-Agent Tech Risk & Control Assurance</p>
           </div>
 
           <form onSubmit={handleSubmit} data-testid="login-form">
             {error && (
-              <div className="mb-4 p-3 rounded-lg" style={{ background: '#fee2e2', color: '#991b1b', fontSize: '14px' }} data-testid="login-error">
+              <div className="mb-4 p-3 rounded-lg" style={{ background: '#7f1d1d', color: '#fca5a5', fontSize: '14px', border: '1px solid #991b1b' }} data-testid="login-error">
                 {error}
               </div>
             )}
@@ -109,55 +106,12 @@ const Login = ({ onLogin }) => {
             </div>
           </form>
 
-          <div className="mt-6 pt-6" style={{ borderTop: '1px solid #e5e7eb' }}>
-            <p className="text-xs text-gray text-center">
+          <div className="mt-6 pt-6" style={{ borderTop: '1px solid #475569' }}>
+            <p className="text-xs text-gray text-center" style={{ color: '#94a3b8' }}>
               Demo Credentials:<br />
               LOD1: lod1@bank.com / password123<br />
               LOD2: lod2@bank.com / password123
             </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-1 hidden lg:flex items-center justify-center p-8" style={{ background: 'rgba(0, 0, 0, 0.2)' }}>
-        <div className="max-w-lg">
-          <h2 className="text-4xl font-bold text-white mb-6" style={{ fontFamily: 'IBM Plex Sans' }}>
-            Enterprise-Grade<br />Risk Management
-          </h2>
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(255, 255, 255, 0.2)' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-white font-semibold mb-1">Multi-Agent AI Assessment</h3>
-                <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>Automated risk identification and control testing</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(255, 255, 255, 0.2)' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-white font-semibold mb-1">Regulatory Compliance</h3>
-                <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>NIST CSF, ISO 27001, SOC2, PCI-DSS, GDPR, Basel III</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(255, 255, 255, 0.2)' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-white font-semibold mb-1">GRC Integration</h3>
-                <p className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>ServiceNow, Archer, MetricStream connectors</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>

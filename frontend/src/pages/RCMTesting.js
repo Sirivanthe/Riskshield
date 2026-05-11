@@ -175,9 +175,6 @@ const RCMTesting = () => {
       <div className="max-w-7xl mx-auto space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-white">RCM-Driven Control Testing</h1>
-          <p className="text-slate-400">
-            Upload an RCM → LLM gap-checks each test procedure → request targeted evidence → get a sufficiency summary → export the final workpaper (PDF + Excel with 5W1H).
-          </p>
         </div>
 
         {/* Stepper */}
@@ -217,9 +214,25 @@ const RCMTesting = () => {
           <Card className="bg-slate-800/50 border-slate-700">
             <CardHeader><CardTitle className="text-white text-base">1. Upload RCM (CSV or Excel)</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              <p className="text-slate-400 text-sm">
-                Expected columns: <code className="text-slate-300">control_id, name, description, domain, owner, type, category, test_procedure, frameworks, evidence_requirements</code>
-              </p>
+              <div className="text-slate-400 text-sm">
+                <div className="mb-2">Expected columns:</div>
+                <div className="grid grid-cols-2 gap-4">
+                  <ul className="list-disc list-inside space-y-1">
+                    <li><code className="text-slate-300">control_id</code></li>
+                    <li><code className="text-slate-300">name</code></li>
+                    <li><code className="text-slate-300">description</code></li>
+                    <li><code className="text-slate-300">domain</code></li>
+                    <li><code className="text-slate-300">owner</code></li>
+                  </ul>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li><code className="text-slate-300">type</code></li>
+                    <li><code className="text-slate-300">category</code></li>
+                    <li><code className="text-slate-300">test_procedure</code></li>
+                    <li><code className="text-slate-300">frameworks</code></li>
+                    <li><code className="text-slate-300">evidence_requirements</code></li>
+                  </ul>
+                </div>
+              </div>
               <input
                 ref={rcmInputRef}
                 type="file"

@@ -200,7 +200,6 @@ const IssueManagement = ({ user }) => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-white">Issue Management</h1>
-            <p className="text-slate-400">Track and manage risk findings, control deficiencies, and compliance issues</p>
           </div>
           <Button onClick={() => setShowCreateForm(true)} data-testid="new-issue-btn">
             Create Issue
@@ -268,7 +267,7 @@ const IssueManagement = ({ user }) => {
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="all">Status of All</SelectItem>
               <SelectItem value="OPEN">Open</SelectItem>
               <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
               <SelectItem value="PENDING_REVIEW">Pending Review</SelectItem>

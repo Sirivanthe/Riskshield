@@ -938,15 +938,13 @@ const ControlAnalysis = () => {
 
             <h1 className="text-2xl font-bold text-white">Control Analysis</h1>
 
-            <p className="text-slate-400">Ingest, analyze and evaluate controls. Upload registers, validate evidence with AI and export audit workpapers.</p>
-
           </div>
 
           <div className="flex gap-2">
 
-            <Button onClick={() => downloadWorkpaper('pdf')} className="bg-slate-700 hover:bg-slate-600">Export PDF</Button>
+            <Button onClick={() => downloadWorkpaper('pdf')} className="bg-blue-500 hover:bg-blue-600">Export PDF</Button>
 
-            <Button onClick={() => downloadWorkpaper('excel')}>Export Excel</Button>
+            <Button onClick={() => downloadWorkpaper('excel')} className="bg-blue-500 hover:bg-blue-600">Export Excel</Button>
 
           </div>
 
@@ -972,12 +970,11 @@ const ControlAnalysis = () => {
 
             <Button variant="outline" onClick={() => excelInputRef.current?.click()} disabled={uploading}>Upload Excel</Button>
 
-            <Button variant="outline" onClick={() => pdfInputRef.current?.click()} disabled={uploading}>Upload PDF (LLM-extract)</Button>
+            <Button variant="outline" onClick={() => pdfInputRef.current?.click()} disabled={uploading}>Upload PDF</Button>
 
-            <Button variant="outline" onClick={importServiceNow} disabled={uploading}>Import from ServiceNow (Mock)</Button>
+            <Button variant="outline" onClick={importServiceNow} disabled={uploading}>Import from ServiceNow</Button>
 
-            <span className="text-xs text-slate-500">CSV/Excel: control_id, name, description, domain, owner, type, category, test_procedure, frameworks · PDF: free-form, extracted by Claude.</span>
-
+            
           </CardContent>
 
         </Card>
@@ -1048,7 +1045,7 @@ const ControlAnalysis = () => {
 
                      quality.quality_score >= 60 ? '⚠️ Fair — some controls need improvement' :
 
-                     '❌ Poor — significant gaps in control quality'}
+                     ''}
 
                   </div>
 
@@ -1098,19 +1095,19 @@ const ControlAnalysis = () => {
 
                   <div className="grid grid-cols-3 gap-1 text-xs">
 
-                    <div className={`text-center p-1 rounded ${quality.missing_descriptions > 0 ? 'bg-red-900/40 text-red-300' : 'bg-green-900/40 text-green-300'}`}>
+                    <div className={`text-center p-1 rounded ${quality.missing_descriptions > 0 ? 'bg-red-900/40 text-red-300' : 'bg-slate-900/40 text-black'}`}>
 
-                      {quality.missing_descriptions} missing desc
+                      {quality.missing_descriptions} missing descriptions
 
                     </div>
 
-                    <div className={`text-center p-1 rounded ${quality.missing_owners > 0 ? 'bg-red-900/40 text-red-300' : 'bg-green-900/40 text-green-300'}`}>
+                    <div className={`text-center p-1 rounded ${quality.missing_owners > 0 ? 'bg-red-900/40 text-red-300' : 'bg-slate-900/40 text-black'}`}>
 
                       {quality.missing_owners} missing owner
 
                     </div>
 
-                    <div className={`text-center p-1 rounded ${quality.missing_test_procedures > 0 ? 'bg-red-900/40 text-red-300' : 'bg-green-900/40 text-green-300'}`}>
+                    <div className={`text-center p-1 rounded ${quality.missing_test_procedures > 0 ? 'bg-red-900/40 text-red-300' : 'bg-slate-900/40 text-black'}`}>
 
                       {quality.missing_test_procedures} missing test
 
@@ -1148,10 +1145,8 @@ const ControlAnalysis = () => {
 
                   <div className="text-xs text-slate-400">Controls should not overlap or duplicate each other. Duplicate controls waste testing effort and confuse auditors.</div>
 
-                  <div className={`text-center p-1 rounded text-xs ${quality.duplicates_found > 0 ? 'bg-red-900/40 text-red-300' : 'bg-green-900/40 text-green-300'}`}>
-
-                    {quality.duplicates_found === 0 ? '✅ No duplicates found' : `⚠️ ${quality.duplicates_found} duplicate pairs detected`}
-
+                  <div className={`text-center p-1 rounded text-xs ${quality.duplicates_found > 0 ? 'bg-red-900/40 text-red-300' : 'bg-slate-900/40 text-black'}`}>
+                    {quality.duplicates_found === 0 ? 'No duplicates found' : `⚠️ ${quality.duplicates_found} duplicate pairs detected`}
                   </div>
 
                 </CardContent>
@@ -1186,31 +1181,25 @@ const ControlAnalysis = () => {
 
                   <div className="grid grid-cols-3 gap-1 text-xs">
 
-                    <div className="text-center p-1 rounded bg-green-900/40 text-green-300">
+                    <div className="text-center p-1 rounded bg-green-900/40 text-black">
 
                       {quality.strong_controls} strong
 
                     </div>
 
-                    <div className="text-center p-1 rounded bg-slate-700 text-slate-300">
+                    <div className="text-center p-1 rounded bg-slate-700 text-black">
 
                       {quality.total_controls - quality.strong_controls - quality.weak_controls} neutral
 
                     </div>
 
-                    <div className={`text-center p-1 rounded ${quality.weak_controls > 0 ? 'bg-red-900/40 text-red-300' : 'bg-slate-700 text-slate-400'}`}>
+                    <div className={`text-center p-1 rounded ${quality.weak_controls > 0 ? 'bg-red-900/40 text-red-300' : 'bg-slate-700 text-black'}`}>
 
                       {quality.weak_controls} weak
 
                     </div>
 
                   </div>
-
-                  {quality.strength_score < 80 && (
-
-                    <div className="text-xs text-yellow-400">💡 Use AI Improve on controls to boost strength score</div>
-
-                  )}
 
                 </CardContent>
 
@@ -1276,19 +1265,19 @@ const ControlAnalysis = () => {
 
                   <thead>
 
-                    <tr className="text-left text-slate-400 border-b border-slate-700">
+                    <tr className="text-left text-white border-b border-slate-700">
 
                       <th className="py-2">Domain</th>
 
                       <th>Total</th>
 
-                      <th>✅ Effective</th>
+                      <th>Effective</th>
 
-                      <th>⚠️ Partial</th>
+                      <th>Partial</th>
 
-                      <th>❌ Ineffective</th>
+                      <th>Ineffective</th>
 
-                      <th>🔲 Not Tested</th>
+                      <th>Not Tested</th>
 
                       <th>Coverage Score</th>
 

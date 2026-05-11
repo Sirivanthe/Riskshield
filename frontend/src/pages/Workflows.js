@@ -37,7 +37,6 @@ const Workflows = ({ user }) => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="page-title" data-testid="workflows-title">Workflows</h1>
-            <p className="page-subtitle">Automated risk response and GRC integration</p>
           </div>
           {canManageWorkflows && (
             <button

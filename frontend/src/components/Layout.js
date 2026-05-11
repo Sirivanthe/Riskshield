@@ -148,8 +148,7 @@ const Layout = ({ user, onLogout }) => {
       <aside className="sidebar" data-testid="sidebar">
         <div className="sidebar-header">
           <NavLink to="/" className="sidebar-logo" data-testid="sidebar-logo">
-            <div className="logo-icon">RS</div>
-            <span>RiskShield</span>
+            <span>KPMG RISK SHIELD</span>
           </NavLink>
           <div className="user-badge" data-testid="user-badge">
             <div className="user-name">{user.full_name}</div>

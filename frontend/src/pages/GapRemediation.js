@@ -121,7 +121,6 @@ const GapRemediation = ({ user }) => {
       <div className="page-header">
         <div>
           <h1 className="page-title" data-testid="gap-remediation-title">Gap Remediation</h1>
-          <p className="page-subtitle">AI-powered control gap analysis and remediation planning</p>
         </div>
       </div>
 
