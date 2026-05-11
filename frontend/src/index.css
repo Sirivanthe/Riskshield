@@ -158,16 +158,22 @@ div[class*="text-card-foreground"], div.text-card-foreground {
   border: 1px solid #2563eb !important;
 }
 
+.btn-outline {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid #ffffff !important;
+}
+
+.btn-outline:hover {
+  background-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
 .btn-primary:hover {
   background-color: #2563eb !important; 
   border-color: #1d4ed8 !important;
 }
 
-.btn-outline {
-  background-color: transparent !important; 
-  color: #e2e8f0 !important;
-  border: 1px solid #475569 !important;
-}
 
 .btn-outline:hover {
   background-color: #334155 !important; 
