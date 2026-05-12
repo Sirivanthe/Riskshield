@@ -58,8 +58,7 @@ const Assessments = ({ user }) => {
       <div className="page-header">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="page-title" data-testid="assessments-title">Assessments</h1>
-            <p className="page-subtitle">Manage technology risk assessments</p>
+            <h1 className="text-2xl font-bold text-white" data-testid="assessments-title">Assessments</h1>
           </div>
           <button
             className="btn btn-primary"

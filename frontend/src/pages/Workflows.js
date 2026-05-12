@@ -36,7 +36,7 @@ const Workflows = ({ user }) => {
       <div className="page-header">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="page-title" data-testid="workflows-title">Workflows</h1>
+            <h1 className="text-2xl font-bold text-white" data-testid="workflows-title">Workflows</h1>
           </div>
           {canManageWorkflows && (
             <button

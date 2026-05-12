@@ -128,12 +128,9 @@ const Dashboard = ({ user }) => {
           <div style={{ fontSize: '12px', color: '#64748b', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
             RiskShield · Command Center
           </div>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 700, color: '#f8fafc', marginTop: '8px' }}>
-            Welcome, {firstName}.
+          <h1 className="text-2xl font-bold text-white" style={{ marginTop: '8px', letterSpacing: '0.02em', textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+            Welcome
           </h1>
-          <p style={{ fontSize: '15px', color: '#94a3b8', marginTop: '4px', maxWidth: '640px' }}>
-            Pick a workflow to start. Each module is self-contained and feeds back into the shared control, risk and issue registers.
-          </p>
         </div>
 
         {/* Health strip */}
@@ -145,29 +142,27 @@ const Dashboard = ({ user }) => {
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
               gap: '12px',
-              padding: '14px',
-              borderRadius: '14px',
-              background: '#1e293b',
-              border: '1px solid #334155',
             }}
           >
             {health.pills.map((p, i) => (
-              <Link
+              <div
                 key={i}
-                to={pillHref(p)}
                 data-testid={`health-pill-${i}`}
-                title={`${p.detail} — click to manage`}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px',
-                  padding: '8px 12px',
-                  borderRadius: '10px',
+                  gap: '8px',
+                  padding: '6px 10px',
+                  borderRadius: '6px',
                   background: '#1e293b',
-                  textDecoration: 'none',
-                  color: 'inherit',
+                  border: '2px solid #ffffff',
+                  cursor: 'pointer',
                   transition: 'background 0.15s, transform 0.15s',
+                  textAlign: 'left',
+                  width: '100%',
                 }}
+                onClick={() => window.location.href = pillHref(p)}
+                title={`${p.detail} — click to manage`}
                 onMouseOver={(e) => {
                   e.currentTarget.style.background = '#334155';
                   e.currentTarget.style.transform = 'translateY(-1px)';
@@ -179,32 +174,20 @@ const Dashboard = ({ user }) => {
               >
                 <span
                   style={{
-                    width: '10px',
-                    height: '10px',
+                    width: '8px',
+                    height: '8px',
                     borderRadius: '50%',
                     background: statusColor(p.status),
-                    boxShadow: `0 0 10px ${statusColor(p.status)}99`,
+                    boxShadow: `0 0 8px ${statusColor(p.status)}99`,
                     flexShrink: 0,
                   }}
                 />
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#e2e8f0' }}>
-                    {p.label}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '11px',
-                      color: '#94a3b8',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {p.detail}
+                  <div style={{ fontSize: '14px', fontWeight: 700, color: '#e2e8f0' }}>
+                    {p.label.replace('· EMERGENT', '').replace('· Mock', '').replace('· Empty', '').replace('· 0 tenants', '')}
                   </div>
                 </div>
-                <span style={{ fontSize: '11px', color: '#64748b', flexShrink: 0 }}>→</span>
-              </Link>
+              </div>
             ))}
           </div>
         )}
@@ -315,11 +298,7 @@ const Dashboard = ({ user }) => {
           ))}
         </div>
 
-        {/* Footer hints */}
-        <div style={{ marginTop: '48px', fontSize: '12px', color: '#475569' }}>
-          Need something else? Use the sidebar for Assessments, Knowledge Graph, Trend Analytics, Observability and Admin.
-        </div>
-      </div>
+              </div>
     </div>
   );
 };

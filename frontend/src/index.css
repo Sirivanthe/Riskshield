@@ -158,6 +158,11 @@ div[class*="text-card-foreground"], div.text-card-foreground {
   border: 1px solid #2563eb !important;
 }
 
+.btn-primary:hover {
+  background-color: #2563eb !important; 
+  border-color: #1d4ed8 !important;
+}
+
 .btn-outline {
   background-color: #1e293b !important;
   color: #f8fafc !important;

@@ -81,7 +81,7 @@ const KnowledgeGraph = ({ user }) => {
   return (
     <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="knowledge-graph-page">
       <div className="page-header">
-        <h1 className="page-title" data-testid="kg-title">Organizational Knowledge Graph</h1>
+        <h1 className="text-2xl font-bold text-white" data-testid="kg-title">Organizational Knowledge Graph</h1>
       </div>
 
       <div className="page-content">

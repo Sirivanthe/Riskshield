@@ -74,7 +74,7 @@ const AgentActivityViewer = ({ user }) => {
       <div className="page-header">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="page-title" data-testid="activity-title">Agent Activity Monitor</h1>
+            <h1 className="text-2xl font-bold text-white" data-testid="activity-title">Agent Activity Monitor</h1>
             <p className="page-subtitle">Real-time AI agent activity tracking</p>
           </div>
           <div className="flex gap-2 items-center">

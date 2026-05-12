@@ -77,7 +77,7 @@ const AssessmentDetail = ({ user }) => {
                   <path d="M19 12H5M12 19l-7-7 7-7"></path>
                 </svg>
               </Link>
-              <h1 className="page-title" data-testid="assessment-detail-title">{assessment.name}</h1>
+              <h1 className="text-2xl font-bold text-white" data-testid="assessment-detail-title">{assessment.name}</h1>
               <span className={`badge ${assessment.status.toLowerCase()}`}>{assessment.status}</span>
               {(assessment.status === 'IN_PROGRESS' || assessment.status === 'PENDING') && (
                 <span

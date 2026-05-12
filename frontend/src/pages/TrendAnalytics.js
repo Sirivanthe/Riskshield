@@ -536,8 +536,6 @@ const TrendAnalytics = ({ user }) => {
 
             <h1 className="text-2xl font-bold text-white">Trend Analytics</h1>
 
-            <p className="text-slate-400">Track risk, compliance, and control effectiveness over time</p>
-
           </div>
 
           <div className="flex items-center gap-4">

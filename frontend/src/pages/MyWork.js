@@ -83,8 +83,8 @@ const MyWork = ({ user }) => {
           <div style={{ fontSize: '12px', color: '#64748b', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
             Riskshield · My Work
           </div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 700, color: '#f8fafc', marginTop: '6px' }}>
-            Hi {user?.full_name?.split(' ')[0] || 'there'} — here's what needs you.
+          <h1 className="text-2xl font-bold text-white" style={{ marginTop: '6px' }}>
+            Here are your insights
           </h1>
           <div style={{ color: '#94a3b8', fontSize: '14px', marginTop: '4px' }}>
             {c.total || 0} open items across your register. Auto-refreshes every 30s.

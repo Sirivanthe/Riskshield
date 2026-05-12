@@ -200,17 +200,18 @@ const ControlsLibrary = ({ user }) => {
   return (
     <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="controls-library-page">
       <div className="page-header">
-        <div>
-          <h1 className="page-title" data-testid="controls-library-title">Controls Library</h1>
-          <p className="page-subtitle">Manage custom controls for risk mitigation and compliance</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-white" data-testid="controls-library-title">Controls Library</h1>
+          </div>
+          <button
+            className="btn btn-primary"
+            onClick={() => setShowCreateModal(true)}
+            data-testid="create-control-button"
+          >
+            + New Control
+          </button>
         </div>
-        <button
-          className="btn btn-primary"
-          onClick={() => setShowCreateModal(true)}
-          data-testid="create-control-button"
-        >
-          + New Control
-        </button>
       </div>
 
       <div className="page-content">

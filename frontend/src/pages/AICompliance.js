@@ -165,21 +165,20 @@ const AICompliance = ({ user }) => {
     <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="ai-compliance-page">
       <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
       <div className="page-header">
-        <div>
-          <h1 className="page-title" data-testid="ai-compliance-title">AI Compliance</h1>
-          <p className="page-subtitle">Manage AI systems and compliance with EU AI Act & NIST AI RMF</p>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {pollingActive && (
-            <span style={{ fontSize: '13px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{
-                width: '8px', height: '8px', borderRadius: '50%',
-                background: '#f59e0b', display: 'inline-block',
-                animation: 'pulse 1.2s ease-in-out infinite'
-              }}/>
-              Assessment running…
-            </span>
-          )}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-white" data-testid="ai-compliance-title">AI Compliance</h1>
+            {pollingActive && (
+              <span style={{ fontSize: '13px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{
+                  width: '8px', height: '8px', borderRadius: '50%',
+                  background: '#f59e0b', display: 'inline-block',
+                  animation: 'pulse 1.2s ease-in-out infinite'
+                }}/>
+                Assessment running…
+              </span>
+            )}
+          </div>
           <button
             className="btn btn-primary"
             onClick={() => setShowRegisterModal(true)}

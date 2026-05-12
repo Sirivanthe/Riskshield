@@ -178,7 +178,7 @@ const AutomatedTesting = ({ user }) => {
 
         <div>
 
-          <h1 className="page-title" data-testid="automated-testing-title">Automated Control Testing</h1>
+          <h1 className="text-2xl font-bold text-white" data-testid="automated-testing-title">Automated Control Testing</h1>
 
         </div>
 

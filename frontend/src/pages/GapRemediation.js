@@ -120,7 +120,7 @@ const GapRemediation = ({ user }) => {
     <div className="min-h-screen" style={{ background: '#0f172a' }} data-testid="gap-remediation-page">
       <div className="page-header">
         <div>
-          <h1 className="page-title" data-testid="gap-remediation-title">Gap Remediation</h1>
+          <h1 className="text-2xl font-bold text-white" data-testid="gap-remediation-title">Gap Remediation</h1>
         </div>
       </div>
 

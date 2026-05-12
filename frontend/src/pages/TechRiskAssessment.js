@@ -222,9 +222,8 @@ const TechRiskAssessment = ({ user }) => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-white">Tech Risk Assessment</h1>
-            <p className="text-slate-400">Application and technology risk assessments with intelligent questionnaire</p>
           </div>
-          <Button onClick={() => setShowCreateForm(true)}>New Assessment</Button>
+          <Button onClick={() => setShowCreateForm(true)} className="btn btn-primary">New Assessment</Button>
         </div>
 
         {/* Create Form */}

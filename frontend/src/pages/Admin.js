@@ -423,7 +423,7 @@ const Admin = ({ user }) => {
   return (
     <div data-testid="admin-page">
       <div className="page-header">
-        <h1 className="page-title" data-testid="admin-title">Admin Settings</h1>
+        <h1 className="text-2xl font-bold text-white" data-testid="admin-title">Admin Settings</h1>
         <p className="page-subtitle">Configure LLM providers, manage regulatory documents, and system settings</p>
       </div>
 

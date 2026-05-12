@@ -39,8 +39,7 @@ const Observability = ({ user }) => {
       <div className="page-header">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="page-title" data-testid="observability-title">Model Observability</h1>
-            <p className="page-subtitle">Monitor AI model performance and system health</p>
+            <h1 className="text-2xl font-bold text-white" data-testid="observability-title">Model Observability</h1>
           </div>
           <div className="flex gap-2 items-center">
             <label className="flex items-center gap-2" style={{ fontSize: '14px' }}>
@@ -69,22 +68,22 @@ const Observability = ({ user }) => {
             <div className="mb-6">
               <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#f8fafc', marginBottom: '16px' }}>Model Performance</h2>
               <div className="grid grid-4">
-                <div className="stat-card" data-testid="total-requests-card">
+                <div className="stat-card" data-testid="total-requests-card" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
                   <div className="stat-label">Total Requests</div>
                   <div className="stat-value">{dashboard.model_performance.total_requests}</div>
                   <div className="stat-change positive">Last 24 hours</div>
                 </div>
-                <div className="stat-card" data-testid="total-tokens-card">
+                <div className="stat-card" data-testid="total-tokens-card" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
                   <div className="stat-label">Total Tokens</div>
                   <div className="stat-value" style={{ fontSize: '28px' }}>{dashboard.model_performance.total_tokens.toLocaleString()}</div>
                   <div className="stat-change">Prompt + Completion</div>
                 </div>
-                <div className="stat-card" data-testid="total-cost-card">
+                <div className="stat-card" data-testid="total-cost-card" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
                   <div className="stat-label">Total Cost</div>
                   <div className="stat-value" style={{ fontSize: '28px' }}>${dashboard.model_performance.total_cost_usd}</div>
                   <div className="stat-change">USD</div>
                 </div>
-                <div className="stat-card" data-testid="avg-latency-card">
+                <div className="stat-card" data-testid="avg-latency-card" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
                   <div className="stat-label">Avg Latency</div>
                   <div className="stat-value" style={{ fontSize: '28px' }}>{dashboard.model_performance.avg_latency_ms}ms</div>
                   <div className="stat-change positive">{dashboard.model_performance.success_rate}% success</div>
@@ -96,15 +95,15 @@ const Observability = ({ user }) => {
             <div className="mb-6">
               <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#f8fafc', marginBottom: '16px' }}>Agent Activity</h2>
               <div className="grid grid-3">
-                <div className="stat-card" data-testid="total-activities-card">
+                <div className="stat-card" data-testid="total-activities-card" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
                   <div className="stat-label">Total Activities</div>
                   <div className="stat-value">{dashboard.agent_activity.total_activities}</div>
                 </div>
-                <div className="stat-card">
+                <div className="stat-card" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
                   <div className="stat-label">Completed</div>
                   <div className="stat-value" style={{ color: '#10b981' }}>{dashboard.agent_activity.completed}</div>
                 </div>
-                <div className="stat-card">
+                <div className="stat-card" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
                   <div className="stat-label">Failed</div>
                   <div className="stat-value" style={{ color: dashboard.agent_activity.failed > 0 ? '#ef4444' : '#10b981' }}>
                     {dashboard.agent_activity.failed}
@@ -117,12 +116,12 @@ const Observability = ({ user }) => {
             <div className="mb-6">
               <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#f8fafc', marginBottom: '16px' }}>Knowledge Graph</h2>
               <div className="grid grid-2">
-                <div className="stat-card" data-testid="total-entities-card">
+                <div className="stat-card" data-testid="total-entities-card" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
                   <div className="stat-label">Total Entities</div>
                   <div className="stat-value">{dashboard.knowledge_graph.total_entities}</div>
                   <div className="stat-change">Systems, Risks, Controls, etc.</div>
                 </div>
-                <div className="stat-card" data-testid="total-relations-card">
+                <div className="stat-card" data-testid="total-relations-card" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
                   <div className="stat-label">Total Relations</div>
                   <div className="stat-value">{dashboard.knowledge_graph.total_relations}</div>
                   <div className="stat-change">Connections between entities</div>
@@ -132,7 +131,7 @@ const Observability = ({ user }) => {
 
             {/* Recent Metrics */}
             <div className="grid grid-2 gap-6">
-              <div className="card">
+              <div className="card" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
                 <h3 className="card-title mb-4">Recent Model Metrics</h3>
                 {dashboard.recent_metrics && dashboard.recent_metrics.length > 0 ? (
                   <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
@@ -164,7 +163,7 @@ const Observability = ({ user }) => {
                 )}
               </div>
 
-              <div className="card">
+              <div className="card" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
                 <h3 className="card-title mb-4">Recent Activities</h3>
                 {dashboard.recent_activities && dashboard.recent_activities.length > 0 ? (
                   <div style={{ maxHeight: '400px', overflowY: 'auto' }} className="space-y-2">
@@ -223,7 +222,7 @@ const Observability = ({ user }) => {
             </div>
 
             {/* System Health Indicators */}
-            <div className="card mt-6">
+            <div className="card mt-6" style={{ border: '3px solid #ffffff !important', outline: '1px solid #ffffff !important' }}>
               <h3 className="card-title mb-4">System Health</h3>
               <div className="grid grid-3 gap-4">
                 <div style={{ padding: '16px', background: '#1e293b', borderRadius: '8px', border: '1px solid #86efac' }}>
