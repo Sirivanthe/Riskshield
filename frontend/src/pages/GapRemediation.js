@@ -127,30 +127,30 @@ const GapRemediation = ({ user }) => {
       <div className="page-content">
         {/* Summary Stats */}
         <div className="grid grid-4 gap-4 mb-6">
-          <div className="stat-card">
-            <div className="stat-label">Open Gaps</div>
-            <div className="stat-value" style={{ color: '#ef4444' }}>
+          <div className="stat-card" style={{ outline: gaps.filter(g => g.status === 'OPEN').length === 0 ? '2px solid white' : 'none' }}>
+            <div className="stat-label" style={{ color: '#ffffff' }}>Open Gaps</div>
+            <div className="stat-value" style={{ color: gaps.filter(g => g.status === 'OPEN').length === 0 ? '#ffffff' : '#ef4444' }}>
               {gaps.filter(g => g.status === 'OPEN').length}
             </div>
             <div className="stat-trend negative">Needs remediation</div>
           </div>
-          <div className="stat-card">
-            <div className="stat-label">In Progress</div>
-            <div className="stat-value" style={{ color: '#f59e0b' }}>
+          <div className="stat-card" style={{ outline: remediations.filter(r => r.status === 'IN_PROGRESS').length === 0 ? '2px solid white' : 'none' }}>
+            <div className="stat-label" style={{ color: '#ffffff' }}>In Progress</div>
+            <div className="stat-value" style={{ color: remediations.filter(r => r.status === 'IN_PROGRESS').length === 0 ? '#ffffff' : '#f59e0b' }}>
               {remediations.filter(r => r.status === 'IN_PROGRESS').length}
             </div>
             <div className="stat-trend">Being remediated</div>
           </div>
-          <div className="stat-card">
-            <div className="stat-label">Remediated</div>
-            <div className="stat-value" style={{ color: '#22c55e' }}>
+          <div className="stat-card" style={{ outline: gaps.filter(g => g.status === 'REMEDIATED').length === 0 ? '2px solid white' : 'none' }}>
+            <div className="stat-label" style={{ color: '#ffffff' }}>Remediated</div>
+            <div className="stat-value" style={{ color: gaps.filter(g => g.status === 'REMEDIATED').length === 0 ? '#ffffff' : '#22c55e' }}>
               {gaps.filter(g => g.status === 'REMEDIATED').length}
             </div>
             <div className="stat-trend positive">Closed</div>
           </div>
-          <div className="stat-card">
-            <div className="stat-label">Critical Gaps</div>
-            <div className="stat-value" style={{ color: '#ef4444' }}>
+          <div className="stat-card" style={{ outline: gaps.filter(g => g.severity === 'CRITICAL' && g.status === 'OPEN').length === 0 ? '2px solid white' : 'none' }}>
+            <div className="stat-label" style={{ color: '#ffffff' }}>Critical Gaps</div>
+            <div className="stat-value" style={{ color: gaps.filter(g => g.severity === 'CRITICAL' && g.status === 'OPEN').length === 0 ? '#ffffff' : '#ef4444' }}>
               {gaps.filter(g => g.severity === 'CRITICAL' && g.status === 'OPEN').length}
             </div>
             <div className="stat-trend negative">Urgent</div>

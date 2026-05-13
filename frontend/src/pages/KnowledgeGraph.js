@@ -132,15 +132,15 @@ const KnowledgeGraph = ({ user }) => {
 
         {/* Stats */}
         <div className="grid grid-3 mb-6">
-          <div className="stat-card" style={{ border: '6px solid #0066ff !important' }}>
+          <div className="stat-card" style={{ border: '6px solid #0066ff !important', outline: '2px solid white' }}>
             <div className="stat-label">Total Entities</div>
             <div className="stat-value">{graphData.entities.length}</div>
           </div>
-          <div className="stat-card" style={{ border: '6px solid #00cc66 !important' }}>
+          <div className="stat-card" style={{ border: '6px solid #00cc66 !important', outline: '2px solid white' }}>
             <div className="stat-label">Total Relations</div>
             <div className="stat-value">{graphData.relations.length}</div>
           </div>
-          <div className="stat-card" style={{ border: '6px solid #ff9900 !important' }}>
+          <div className="stat-card" style={{ border: '6px solid #ff9900 !important', outline: '2px solid white' }}>
             <div className="stat-label">Knowledge Density</div>
             <div className="stat-value" style={{ fontSize: '28px' }}>
               {graphData.entities.length > 0 ? (graphData.relations.length / graphData.entities.length).toFixed(1) : 0}
@@ -151,7 +151,7 @@ const KnowledgeGraph = ({ user }) => {
         {/* Graph Visualization (Simplified List View) */}
         <div className="grid grid-2 gap-6">
           {/* Entities */}
-          <div className="card" data-testid="entities-card" style={{ border: '6px solid #9933ff !important' }}>
+          <div className="card" data-testid="entities-card" style={{ border: '6px solid #9933ff !important', outline: '2px solid white' }}>
             <h3 className="card-title mb-4">Entities ({graphData.entities.length})</h3>
             <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
               {graphData.entities.length > 0 ? (
@@ -213,7 +213,7 @@ const KnowledgeGraph = ({ user }) => {
           </div>
 
           {/* Relations */}
-          <div className="card" data-testid="relations-card" style={{ border: '6px solid #ff3333 !important' }}>
+          <div className="card" data-testid="relations-card" style={{ border: '6px solid #ff3333 !important', outline: '2px solid white' }}>
             <h3 className="card-title mb-4">Relations ({graphData.relations.length})</h3>
             <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
               {graphData.relations.length > 0 ? (
@@ -286,7 +286,7 @@ const KnowledgeGraph = ({ user }) => {
 
         {/* Selected Entity Detail */}
         {selectedEntity && (
-          <div className="card mt-6" data-testid="selected-entity-detail">
+          <div className="card mt-6" data-testid="selected-entity-detail" style={{ outline: '2px solid white' }}>
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="card-title" style={{ marginBottom: '8px' }}>{selectedEntity.name}</h3>
@@ -347,7 +347,7 @@ const KnowledgeGraph = ({ user }) => {
         )}
 
         {/* Legend */}
-        <div className="card mt-6" style={{ border: '6px solid #00cccc !important' }}>
+        <div className="card mt-6" style={{ border: '6px solid #00cccc !important', outline: '2px solid white' }}>
           <h3 className="card-title mb-4">Entity Types Legend</h3>
           <div className="grid grid-4 gap-3">
             {['SYSTEM', 'RISK', 'CONTROL', 'REGULATION', 'BUSINESS_UNIT', 'VENDOR', 'ASSET'].map((type) => (

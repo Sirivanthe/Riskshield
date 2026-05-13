@@ -178,7 +178,7 @@ const RCMTesting = () => {
         </div>
 
         {/* Stepper */}
-        <div className="flex items-center gap-2" data-testid="rcm-stepper">
+        <div style={{display:'flex',alignItems:'center',gap:'12px',width:'100%'}} data-testid="rcm-stepper">
           {[
             { n: 1, label: 'Upload RCM' },
             { n: 2, label: 'Procedure Gaps' },
@@ -190,13 +190,15 @@ const RCMTesting = () => {
               <button
                 onClick={() => step >= s.n && setStep(s.n)}
                 disabled={step < s.n}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
-                  step === s.n
-                    ? 'bg-blue-600 text-white'
-                    : step > s.n
-                    ? 'bg-slate-700 text-slate-200 cursor-pointer'
-                    : 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                }`}
+                style={{
+                  flex:1, display:'flex', alignItems:'center', justifyContent:'center',
+                  gap:'8px', padding:'11px 8px', borderRadius:'8px', fontSize:'13px',
+                  fontWeight:600, border:'2px solid rgba(255,255,255,0.3)',
+                  cursor: step < s.n ? 'not-allowed' : 'pointer',
+                  background: step === s.n ? 'linear-gradient(135deg,#3b82f6,#2563eb)' : step > s.n ? '#334155' : '#1e293b',
+                  color: step === s.n ? '#fff' : step > s.n ? '#e2e8f0' : '#64748b',
+                  whiteSpace:'nowrap', boxSizing:'border-box',
+                }}
                 data-testid={`step-${s.n}`}
               >
                 <span className="w-5 h-5 rounded-full bg-black/30 flex items-center justify-center text-xs font-bold">
@@ -204,8 +206,7 @@ const RCMTesting = () => {
                 </span>
                 {s.label}
               </button>
-              {i < arr.length - 1 && <div className="flex-1 h-px bg-slate-700" />}
-            </React.Fragment>
+                          </React.Fragment>
           ))}
         </div>
 
@@ -241,11 +242,11 @@ const RCMTesting = () => {
                 data-testid="rcm-file-input"
                 onChange={(e) => uploadRCM(e.target.files?.[0])}
               />
-              <Button onClick={() => rcmInputRef.current?.click()} disabled={importing} data-testid="rcm-upload-btn">
+              <Button onClick={() => rcmInputRef.current?.click()} disabled={importing} data-testid="rcm-upload-btn" className="px-4 py-2">
                 {importing ? 'Uploading...' : 'Select RCM File'}
               </Button>
               {controls.length > 0 && (
-                <Button variant="outline" onClick={() => setStep(2)} data-testid="skip-to-step2">
+                <Button variant="outline" onClick={() => setStep(2)} data-testid="skip-to-step2" className="px-4 py-2">
                   Use existing {controls.length} controls →
                 </Button>
               )}
@@ -260,11 +261,11 @@ const RCMTesting = () => {
               <div className="flex justify-between items-center">
                 <CardTitle className="text-white text-base">2. Test Procedure Gap Analysis ({controls.length} controls)</CardTitle>
                 <div className="flex gap-2">
-                  <Button onClick={runProcedureAnalysis} disabled={analyzing} data-testid="run-procedure-analysis">
+                  <Button onClick={runProcedureAnalysis} disabled={analyzing} data-testid="run-procedure-analysis" className="px-4 py-2">
                     {analyzing ? 'Analyzing with LLM...' : procedureAnalysis ? 'Re-analyze' : 'Run LLM Analysis'}
                   </Button>
                   {procedureAnalysis && (
-                    <Button variant="outline" onClick={() => setStep(3)} data-testid="go-step3">Continue →</Button>
+                    <Button variant="outline" onClick={() => setStep(3)} data-testid="go-step3" className="px-4 py-2">Continue →</Button>
                   )}
                 </div>
               </div>
@@ -311,7 +312,7 @@ const RCMTesting = () => {
                           <div className="bg-slate-800/80 rounded p-2 mt-2">
                             <div className="text-xs text-blue-400 mb-1">SUGGESTED IMPROVED PROCEDURE</div>
                             <div className="text-slate-200 text-sm mb-2">{r.analysis.suggested_improvement}</div>
-                            <Button size="sm" onClick={() => applyImprovement(r.control_id, r.analysis.suggested_improvement)} data-testid={`apply-${r.control_code}`}>
+                            <Button size="sm" onClick={() => applyImprovement(r.control_id, r.analysis.suggested_improvement)} data-testid={`apply-${r.control_code}`} className="px-3 py-1">
                               Apply to Control
                             </Button>
                           </div>
@@ -333,7 +334,7 @@ const RCMTesting = () => {
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle className="text-white text-base">3. Upload Evidence per Control</CardTitle>
-                <Button variant="outline" onClick={() => setStep(4)} data-testid="go-step4">Continue to Summary →</Button>
+                <Button variant="outline" onClick={() => setStep(4)} data-testid="go-step4" className="px-4 py-2">Continue to Summary →</Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -381,6 +382,7 @@ const RCMTesting = () => {
                           onClick={() => evidenceInputRefs.current[c.id]?.click()}
                           disabled={ev?.uploading}
                           data-testid={`upload-evidence-${c.control_id}`}
+                          className="px-3 py-1"
                         >
                           {ev?.uploading ? 'Evaluating...' : ev?.filename ? 'Replace Evidence' : 'Upload Evidence'}
                         </Button>
@@ -467,10 +469,10 @@ const RCMTesting = () => {
                 The workpaper consolidates the control register, quality scores, every evidence evaluation and the full 5W1H audit narrative per control.
               </p>
               <div className="flex gap-3">
-                <Button onClick={() => downloadWorkpaper('pdf')} disabled={finalizing} data-testid="download-pdf">
+                <Button onClick={() => downloadWorkpaper('pdf')} disabled={finalizing} data-testid="download-pdf" className="px-4 py-2">
                   {finalizing ? 'Generating...' : 'Download PDF Report'}
                 </Button>
-                <Button variant="outline" onClick={() => downloadWorkpaper('excel')} disabled={finalizing} data-testid="download-excel">
+                <Button variant="outline" onClick={() => downloadWorkpaper('excel')} disabled={finalizing} data-testid="download-excel" className="px-4 py-2">
                   Download Excel Workpaper
                 </Button>
               </div>

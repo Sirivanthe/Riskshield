@@ -192,7 +192,7 @@ const AutomatedTesting = ({ user }) => {
 
         <div className="grid grid-4 gap-4 mb-6">
 
-          <div className="stat-card">
+          <div className="stat-card" style={{ border: '1px solid white' }}>
 
             <div className="stat-label">Total Test Runs</div>
 

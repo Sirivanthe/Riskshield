@@ -942,9 +942,9 @@ const ControlAnalysis = () => {
 
           <div className="flex gap-2">
 
-            <Button onClick={() => downloadWorkpaper('pdf')} className="bg-blue-500 hover:bg-blue-600">Export PDF</Button>
+            <Button onClick={() => downloadWorkpaper('pdf')} className="bg-blue-500 hover:bg-blue-600 text-white">Export PDF</Button>
 
-            <Button onClick={() => downloadWorkpaper('excel')} className="bg-blue-500 hover:bg-blue-600">Export Excel</Button>
+            <Button onClick={() => downloadWorkpaper('excel')} className="bg-blue-500 hover:bg-blue-600 text-white">Export Excel</Button>
 
           </div>
 
@@ -966,13 +966,13 @@ const ControlAnalysis = () => {
 
             <input ref={pdfInputRef} type="file" accept=".pdf" className="hidden" onChange={(e) => uploadFile(e.target.files?.[0], 'pdf')} />
 
-            <Button onClick={() => csvInputRef.current?.click()} disabled={uploading}>{uploading ? 'Uploading...' : 'Upload CSV'}</Button>
+            <Button onClick={() => csvInputRef.current?.click()} disabled={uploading} className="text-white border border-white">{uploading ? 'Uploading...' : 'Upload CSV'}</Button>
 
-            <Button variant="outline" onClick={() => excelInputRef.current?.click()} disabled={uploading}>Upload Excel</Button>
+            <Button variant="outline" onClick={() => excelInputRef.current?.click()} disabled={uploading} className="border border-white">Upload Excel</Button>
 
-            <Button variant="outline" onClick={() => pdfInputRef.current?.click()} disabled={uploading}>Upload PDF</Button>
+            <Button variant="outline" onClick={() => pdfInputRef.current?.click()} disabled={uploading} className="border border-white">Upload PDF</Button>
 
-            <Button variant="outline" onClick={importServiceNow} disabled={uploading}>Import from ServiceNow</Button>
+            <Button variant="outline" onClick={importServiceNow} disabled={uploading} className="border border-white">Import from ServiceNow</Button>
 
             
           </CardContent>
@@ -1055,11 +1055,12 @@ const ControlAnalysis = () => {
 
                   <div>{quality.total_controls} total controls</div>
 
-                  <div className="text-xs mt-1">Score = (Completeness × 30%) + (Uniqueness × 25%) + (Strength × 20%) + (Effectiveness × 25%)</div>
 
                 </div>
 
               </div>
+
+              <div className="text-xs text-slate-500 mt-2">Score = (Completeness × 30%) + (Uniqueness × 25%) + (Strength × 20%) + (Effectiveness × 25%)</div>
 
             </div>
 
@@ -1095,21 +1096,21 @@ const ControlAnalysis = () => {
 
                   <div className="grid grid-cols-3 gap-1 text-xs">
 
-                    <div className={`text-center p-1 rounded ${quality.missing_descriptions > 0 ? 'bg-red-900/40 text-red-300' : 'bg-slate-900/40 text-black'}`}>
+                    <div className={`text-center p-1 rounded ${quality.missing_descriptions > 0 ? 'bg-red-900/40 text-red-300' : 'bg-blue-600 text-white'}`}>
 
                       {quality.missing_descriptions} missing descriptions
 
                     </div>
 
-                    <div className={`text-center p-1 rounded ${quality.missing_owners > 0 ? 'bg-red-900/40 text-red-300' : 'bg-slate-900/40 text-black'}`}>
+                    <div className={`text-center p-1 rounded ${quality.missing_test_procedures > 0 ? 'bg-red-900/40 text-red-300' : 'bg-blue-600 text-white'}`}>
 
-                      {quality.missing_owners} missing owner
+                      {quality.missing_test_procedures} missing test
 
                     </div>
 
-                    <div className={`text-center p-1 rounded ${quality.missing_test_procedures > 0 ? 'bg-red-900/40 text-red-300' : 'bg-slate-900/40 text-black'}`}>
+                    <div className={`text-center p-1 rounded ${quality.missing_owners > 0 ? 'bg-red-900/40 text-red-300' : 'bg-blue-600 text-white'}`}>
 
-                      {quality.missing_test_procedures} missing test
+                      {quality.missing_owners} missing owner
 
                     </div>
 
@@ -1145,7 +1146,7 @@ const ControlAnalysis = () => {
 
                   <div className="text-xs text-slate-400">Controls should not overlap or duplicate each other. Duplicate controls waste testing effort and confuse auditors.</div>
 
-                  <div className={`text-center p-1 rounded text-xs ${quality.duplicates_found > 0 ? 'bg-red-900/40 text-red-300' : 'bg-slate-900/40 text-black'}`}>
+                  <div className={`text-center p-1 rounded text-xs ${quality.duplicates_found > 0 ? 'bg-red-900/40 text-red-300' : 'bg-blue-600 text-white'}`}>
                     {quality.duplicates_found === 0 ? 'No duplicates found' : `⚠️ ${quality.duplicates_found} duplicate pairs detected`}
                   </div>
 
@@ -1181,19 +1182,19 @@ const ControlAnalysis = () => {
 
                   <div className="grid grid-cols-3 gap-1 text-xs">
 
-                    <div className="text-center p-1 rounded bg-green-900/40 text-black">
+                    <div className={`text-center p-1 rounded ${quality.strong_controls > 0 ? 'bg-green-900/40 text-black' : 'bg-blue-600 text-white'}`}>
 
                       {quality.strong_controls} strong
 
                     </div>
 
-                    <div className="text-center p-1 rounded bg-slate-700 text-black">
+                    <div className={`text-center p-1 rounded ${quality.total_controls - quality.strong_controls - quality.weak_controls > 0 ? 'bg-slate-700 text-black' : 'bg-blue-600 text-white'}`}>
 
                       {quality.total_controls - quality.strong_controls - quality.weak_controls} neutral
 
                     </div>
 
-                    <div className={`text-center p-1 rounded ${quality.weak_controls > 0 ? 'bg-red-900/40 text-red-300' : 'bg-slate-700 text-black'}`}>
+                    <div className={`text-center p-1 rounded ${quality.weak_controls > 0 ? 'bg-red-900/40 text-red-300' : 'bg-blue-600 text-white'}`}>
 
                       {quality.weak_controls} weak
 
@@ -1373,8 +1374,7 @@ const ControlAnalysis = () => {
 
                 </div>
 
-                <p className="text-xs text-slate-400 mt-2">These domains have no controls defined. Consider adding controls or importing your RCM to cover these areas.</p>
-
+                
               </CardContent>
 
             </Card>
@@ -1535,11 +1535,11 @@ const ControlAnalysis = () => {
 
                 ].map((m) => (
 
-                  <div key={m.label} className="bg-slate-900/60 p-2 rounded">
+                  <div key={m.label} className={`${(m.label === 'Controls' && m.value === 0) || (m.label === 'Avg Strength' && m.value === '—') || (m.label === 'Obligations in scope' && m.value === 0) || (m.label === 'Potential Duplicates' && m.value === 0) || (m.label === 'Mapped to Regs' && m.value === 0) ? 'bg-blue-600' : 'bg-slate-900/60'} p-2 rounded border border-white`}>
 
-                    <div className="text-xs text-slate-400">{m.label}</div>
+                    <div className={`text-xs ${(m.label === 'Controls' && m.value === 0) || (m.label === 'Avg Strength' && m.value === '—') || (m.label === 'Obligations in scope' && m.value === 0) || (m.label === 'Potential Duplicates' && m.value === 0) || (m.label === 'Mapped to Regs' && m.value === 0) ? 'text-white' : 'text-slate-400'}`}>{m.label}</div>
 
-                    <div className="text-lg font-bold text-white">{m.value}</div>
+                    <div className={`text-lg font-bold ${(m.label === 'Controls' && m.value === 0) || (m.label === 'Avg Strength' && m.value === '—') || (m.label === 'Obligations in scope' && m.value === 0) || (m.label === 'Potential Duplicates' && m.value === 0) || (m.label === 'Mapped to Regs' && m.value === 0) ? 'text-white' : 'text-white'}`}>{m.value}</div>
 
                   </div>
 
